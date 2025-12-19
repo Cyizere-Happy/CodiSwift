@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3D02BEB32EF55314001D97B4 /* ConfettiSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3D02BEB22EF55314001D97B4 /* ConfettiSwiftUI */; };
+		3D02BEB52EF5531A001D97B4 /* ConfettiSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3D02BEB42EF5531A001D97B4 /* ConfettiSwiftUI */; };
+		3D02BEB72EF5531F001D97B4 /* ConfettiSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3D02BEB62EF5531F001D97B4 /* ConfettiSwiftUI */; };
 		3D77207B2EEC196C006D1B15 /* SplineRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 3D77207A2EEC196C006D1B15 /* SplineRuntime */; };
 		3D77207D2EEC1980006D1B15 /* SplineRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 3D77207C2EEC1980006D1B15 /* SplineRuntime */; };
 		3D77207F2EEC1987006D1B15 /* SplineRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 3D77207E2EEC1987006D1B15 /* SplineRuntime */; };
@@ -58,6 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D02BEB32EF55314001D97B4 /* ConfettiSwiftUI in Frameworks */,
 				3D77207B2EEC196C006D1B15 /* SplineRuntime in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -66,6 +70,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D02BEB52EF5531A001D97B4 /* ConfettiSwiftUI in Frameworks */,
 				3D77207D2EEC1980006D1B15 /* SplineRuntime in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -74,6 +79,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D02BEB72EF5531F001D97B4 /* ConfettiSwiftUI in Frameworks */,
 				3D77207F2EEC1987006D1B15 /* SplineRuntime in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -130,6 +136,7 @@
 			name = CodiSwift;
 			packageProductDependencies = (
 				3D77207A2EEC196C006D1B15 /* SplineRuntime */,
+				3D02BEB22EF55314001D97B4 /* ConfettiSwiftUI */,
 			);
 			productName = CodiSwift;
 			productReference = 3D771FFB2EEC16A9006D1B15 /* CodiSwift.app */;
@@ -154,6 +161,7 @@
 			name = CodiSwiftTests;
 			packageProductDependencies = (
 				3D77207C2EEC1980006D1B15 /* SplineRuntime */,
+				3D02BEB42EF5531A001D97B4 /* ConfettiSwiftUI */,
 			);
 			productName = CodiSwiftTests;
 			productReference = 3D77200B2EEC16AB006D1B15 /* CodiSwiftTests.xctest */;
@@ -178,6 +186,7 @@
 			name = CodiSwiftUITests;
 			packageProductDependencies = (
 				3D77207E2EEC1987006D1B15 /* SplineRuntime */,
+				3D02BEB62EF5531F001D97B4 /* ConfettiSwiftUI */,
 			);
 			productName = CodiSwiftUITests;
 			productReference = 3D7720152EEC16AB006D1B15 /* CodiSwiftUITests.xctest */;
@@ -217,6 +226,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				3D7720782EEC194E006D1B15 /* XCRemoteSwiftPackageReference "spline-ios" */,
+				3D02BEB12EF5530A001D97B4 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3D771FFC2EEC16A9006D1B15 /* Products */;
@@ -577,6 +587,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		3D02BEB12EF5530A001D97B4 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/simibac/ConfettiSwiftUI";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.3;
+			};
+		};
 		3D7720782EEC194E006D1B15 /* XCRemoteSwiftPackageReference "spline-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/splinetool/spline-ios";
@@ -588,6 +606,21 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		3D02BEB22EF55314001D97B4 /* ConfettiSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3D02BEB12EF5530A001D97B4 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */;
+			productName = ConfettiSwiftUI;
+		};
+		3D02BEB42EF5531A001D97B4 /* ConfettiSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3D02BEB12EF5530A001D97B4 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */;
+			productName = ConfettiSwiftUI;
+		};
+		3D02BEB62EF5531F001D97B4 /* ConfettiSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3D02BEB12EF5530A001D97B4 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */;
+			productName = ConfettiSwiftUI;
+		};
 		3D77207A2EEC196C006D1B15 /* SplineRuntime */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3D7720782EEC194E006D1B15 /* XCRemoteSwiftPackageReference "spline-ios" */;

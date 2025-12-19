@@ -1,6 +1,15 @@
 {
-  "originHash" : "6eb1cde575b8c25cfa95028542ad01c3c4d84a522c587d73be600a3bdd7ae1cc",
+  "originHash" : "946b76fc5c5793d2a684a21bbe15f6a464f6713afdec59d8e17836a07d88c247",
   "pins" : [
+    {
+      "identity" : "confettiswiftui",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/simibac/ConfettiSwiftUI",
+      "state" : {
+        "revision" : "79666d42b882bf7921b1941fa7c636d681d77980",
+        "version" : "2.0.3"
+      }
+    },
     {
       "identity" : "spline-ios",
       "kind" : "remoteSourceControl",
