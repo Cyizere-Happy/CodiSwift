@@ -7,6 +7,7 @@ struct HomeScreen: View {
     @State private var currentLevel = 1
     @State private var showLesson = false
     @State private var lessonCompleted = false  // Tracks completion for current level
+    @State private var isExploring = false  // Tracks explore mode
 
     // MARK: - Persistent Progress
     @AppStorage("completedLevel1") private var completedLevel1 = false
@@ -45,28 +46,75 @@ struct HomeScreen: View {
                 .id(currentLevel)
                 .ignoresSafeArea()
 
-            VStack(spacing: 18) {
-
-                levelCard
+            VStack(spacing: 0) {
+                // Top spacing
+                Spacer().frame(height: 20)
+                
+                // Level card - animated
+                if !isExploring {
+                    levelCard
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                        .padding(.horizontal, 20)
+                }
 
                 Spacer()
 
-                HStack(spacing: 0) {
-                    Text("Codi")
-                        .foregroundColor(codiColor)
-                    Text("Swift")
-                        .foregroundColor(swiftColor)
+                // CodiSwift logo - animated
+                if !isExploring {
+                    HStack(spacing: 0) {
+                        Text("Codi")
+                            .foregroundColor(codiColor)
+                        Text("Swift")
+                            .foregroundColor(swiftColor)
+                    }
+                    .font(.largeTitle.bold())
+                    .shadow(radius: 10)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
-                .font(.largeTitle.bold())
-                .shadow(radius: 10)
 
-                Spacer().frame(height: 40)
+                Spacer().frame(height: isExploring ? 0 : 120) // Adjust for tab bar
             }
-            .padding(.horizontal, 20)
+            
+            // Small floating explore button - top right corner
+            if !isExploring {
+                VStack {
+                    HStack {
+                        Spacer()
+                        
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.6)) {
+                                isExploring = true
+                            }
+                            
+                            // Auto return after 5 seconds
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                withAnimation(.easeInOut(duration: 0.6)) {
+                                    isExploring = false
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "sparkles")
+                                .font(.system(size: 18))
+                                .foregroundColor(.white)
+                                .padding(12)
+                                .background(
+                                    Circle()
+                                        .fill(swiftColor.opacity(0.9))
+                                        .shadow(color: swiftColor.opacity(0.3), radius: 6, y: 3)
+                                )
+                        }
+                        .padding(.trailing, 20)
+                        .padding(.top, 280)
+                    }
+                    
+                    Spacer()
+                }
+                .transition(.scale.combined(with: .opacity))
+            }
         }
         // 🔹 Lesson Sheet
         .sheet(isPresented: $showLesson) {
-            LessonView(level: currentLevel) { didComplete in
+            NewLessonView(level: currentLevel) { didComplete in
                 // Update current lesson completion immediately
                 lessonCompleted = didComplete
 

@@ -14,7 +14,7 @@ struct IntroductionView: View {
     @State private var showCountdown = false
 
     @State private var countdown = 5
-    @State private var navigateToHome = false
+    @State private var goToHome = false
 
     // Slower countdown tick
     private let timer = Timer.publish(every: 1.3, on: .main, in: .common).autoconnect()
@@ -64,11 +64,11 @@ struct IntroductionView: View {
             if countdown > 0 {
                 countdown -= 1
             } else {
-                navigateToHome = true
+                goToHome = true
             }
         }
-        .fullScreenCover(isPresented: $navigateToHome) {
-            HomeScreen()
+        .navigationDestination(isPresented: $goToHome) {
+            MainTabView()
         }
         .navigationBarBackButtonHidden(true)
     }
