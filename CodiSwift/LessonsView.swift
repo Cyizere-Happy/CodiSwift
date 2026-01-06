@@ -155,6 +155,13 @@ struct LessonView: View {
             • Animations = movement 💃
             • Architecture = castle 🏰
             """
+        case 4:
+            return """
+            Mastery level! 🧠
+            • Arrays = lists 📋
+            • Dictionaries = pairs 🔑
+            • Index = positions 📍
+            """
         default:
             return "Coming soon! 🚧"
         }
@@ -165,6 +172,7 @@ struct LessonView: View {
         case 1: return "Which keyword creates a variable?"
         case 2: return "What repeats code?"
         case 3: return "What makes things move?"
+        case 4: return "What do Arrays use to find items?"
         default: return ""
         }
     }
@@ -174,6 +182,7 @@ struct LessonView: View {
         case 1: return "var"
         case 2: return "Loop"
         case 3: return "Animation"
+        case 4: return "Index"
         default: return ""
         }
     }
@@ -183,6 +192,7 @@ struct LessonView: View {
         case 1: return ["let", "var", "box"]
         case 2: return ["Function", "Loop", "Choice"]
         case 3: return ["Messenger", "Animation", "Castle"]
+        case 4: return ["Index", "Keys", "Names"]
         default: return []
         }
     }

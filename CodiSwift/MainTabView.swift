@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MainTabView: View {
-    @State private var selectedTab = 0
+    @AppStorage("selectedTab") var selectedTab = 0
     
     var body: some View {
         ZStack {
@@ -22,11 +22,11 @@ struct MainTabView: View {
                     }
                 case 3:
                     TabContentWrapper {
-                        LiveView() // Live competitions
+                        LiveView() // Live competiti
                     }
                 case 4:
                     TabContentWrapper {
-                        RankView() // Leaderboard
+                        RankView()
                     }
                 default:
                     TabContentWrapper {
@@ -35,7 +35,7 @@ struct MainTabView: View {
                 }
             }
             
-            // Custom Tab Bar at bottom
+            // Custom Tab Bar at b
             VStack {
                 Spacer()
                 CustomTabBar(selectedTab: $selectedTab)

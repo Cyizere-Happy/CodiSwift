@@ -575,26 +575,97 @@ struct LessonData {
                     )
                 ]
             )
-        default:
+        case 3:
             return LessonData(
                 title: "Advanced Swift",
-                explanation: "You're becoming a Swift master! Advanced concepts help you build amazing apps with smooth animations and smart architecture.",
+                explanation: "You're becoming a Swift master! Advanced concepts help you build amazing apps with smooth animations and smart architecture. You'll learn how to manage complex data and create beautiful interfaces.",
                 examples: [
                     CodeExample(
-                        code: "// Advanced concepts coming soon!",
-                        explanation: nil
+                        code: "// Swift animations are easy!\nwithAnimation {\n    self.isPulsing = true\n}",
+                        explanation: "Animations bring apps to life and make them feel responsive."
                     )
                 ],
                 keyPoints: [
                     "Combine handles data flow",
-                    "Animations bring apps to life",
-                    "Good architecture keeps code organized"
+                    "Animations improve user experience",
+                    "Architecture keeps code organized"
                 ],
                 quizQuestions: [
                     QuizQuestion(
                         question: "What makes things move in apps?",
                         options: ["Variables", "Functions", "Animations", "Constants"],
                         correctAnswer: "Animations"
+                    )
+                ]
+            )
+        case 4:
+            return LessonData(
+                title: "Arrays & Dictionaries",
+                explanation: "Arrays are like shopping lists - they keep things in a specific order! Dictionaries are like real dictionaries - they connect 'keys' (like a word) to 'values' (like a definition). Imagine an array is a line of students, while a dictionary is a box of cubbies labeled with names!",
+                examples: [
+                    CodeExample(
+                        code: "var list = [\"Apple\", \"Banana\", \"Cherry\"]\nprint(list[0]) // Prints: Apple",
+                        explanation: "Arrays use numbers starting from 0 to find items."
+                    ),
+                    CodeExample(
+                        code: "var ages = [\"Alex\": 10, \"Sam\": 12]\nprint(ages[\"Alex\"]) // Prints: 10",
+                        explanation: "Dictionaries use names (keys) to find information."
+                    )
+                ],
+                keyPoints: [
+                    "Arrays keep items in order",
+                    "Arrays start counting from 0",
+                    "Dictionaries store pairs of keys and values",
+                    "Use Arrays for lists, Dictionaries for structured data"
+                ],
+                quizQuestions: [
+                    QuizQuestion(
+                        question: "What do Arrays use to find items?",
+                        options: ["Keys", "Numbers (Index)", "Names", "Spells"],
+                        correctAnswer: "Numbers (Index)"
+                    ),
+                    QuizQuestion(
+                        question: "What is the first index in a Swift array?",
+                        options: ["1", "-1", "0", "A"],
+                        correctAnswer: "0"
+                    ),
+                    QuizQuestion(
+                        question: "Which one uses 'Keys' and 'Values'?",
+                        options: ["Array", "Variable", "Dictionary", "Loop"],
+                        correctAnswer: "Dictionary"
+                    ),
+                    QuizQuestion(
+                        question: "How do you add an item to an array?",
+                        options: ["add()", "append()", "plus()", "insert()"],
+                        correctAnswer: "append()"
+                    ),
+                    QuizQuestion(
+                        question: "Which stores things in a specific order?",
+                        options: ["Dictionary", "Array", "Constant", "Function"],
+                        correctAnswer: "Array"
+                    )
+                ]
+            )
+        default:
+            return LessonData(
+                title: "Swift Journey",
+                explanation: "You've already learned so much! Keep practicing to master your coding skills.",
+                examples: [
+                    CodeExample(
+                        code: "print(\"Keep going!\")",
+                        explanation: "Consistency is the key to mastering Swift."
+                    )
+                ],
+                keyPoints: [
+                    "Practice every day",
+                    "Build small projects",
+                    "Help others learn"
+                ],
+                quizQuestions: [
+                    QuizQuestion(
+                        question: "What is the key to mastering Swift?",
+                        options: ["Patience", "Practice", "Coffee", "All of these!"],
+                        correctAnswer: "All of these!"
                     )
                 ]
             )
