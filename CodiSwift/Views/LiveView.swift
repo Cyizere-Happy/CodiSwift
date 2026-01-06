@@ -1,4 +1,5 @@
 import SwiftUI
+import SplineRuntime
 
 struct LiveView: View {
     @ObservedObject var userManager = UserManager.shared
@@ -21,13 +22,20 @@ struct LiveView: View {
     
     var body: some View {
         ZStack {
-            // Background gradient
-            LinearGradient(
-                colors: [Color(hex: "1a1a1a"), Color(hex: "2a1a3a")],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
+            // Background
+            if gameMode == .menu {
+                // Spline Scene for Menu
+                SplineView(sceneFileURL: URL(string: "https://build.spline.design/07MOBgjTDL2KtTI0v2uF/scene.splineswift")!)
+                    .ignoresSafeArea()
+            } else {
+                // Gradient for other modes
+                LinearGradient(
+                    colors: [Color(hex: "1a1a1a"), Color(hex: "2a1a3a")],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .ignoresSafeArea()
+            }
             
             switch gameMode {
             case .menu:
@@ -51,19 +59,7 @@ struct LiveView: View {
         VStack(spacing: 32) {
             Spacer()
             
-            // Title
-            VStack(spacing: 12) {
-                Text("🎮")
-                    .font(.system(size: 80))
-                
-                Text("Live Competitions")
-                    .font(.system(size: 32, weight: .bold))
-                    .foregroundColor(.white)
-                
-                Text("Compete with friends in real-time!")
-                    .font(.system(size: 16, weight: .regular))
-                    .foregroundColor(.white.opacity(0.7))
-            }
+            // Note: Title removed to let Spline scene shine!
             
             Spacer()
             

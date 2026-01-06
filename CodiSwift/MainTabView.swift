@@ -56,7 +56,7 @@ struct TabContentWrapper<Content: View>: View {
     
     var body: some View {
         content
-            .padding(.bottom, 0) // No extra padding needed since HomeScreen handles it
+            .padding(.bottom, 0) // No extra padding needed since
     }
 }
 

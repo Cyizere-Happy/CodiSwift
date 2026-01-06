@@ -20,7 +20,9 @@ struct NewLessonView: View {
     // Brand Colors
     let codiColor = Color(hex: "232223")
     let swiftColor = Color(hex: "FF684B")
-    let backgroundColor = Color(hex: "1a1a1a")
+    let backgroundColor = Color.white // Light mode background
+    let cardBackground = Color.white
+    let secondaryBackground = Color(uiColor: .systemGray6)
     
     enum LessonPhase {
         case study
@@ -68,7 +70,7 @@ struct NewLessonView: View {
                     Text("Exit")
                         .font(.system(size: 16, weight: .medium))
                 }
-                .foregroundColor(.white.opacity(0.7))
+                .foregroundColor(.black.opacity(0.7))
             }
             
             Spacer()
@@ -106,7 +108,7 @@ struct NewLessonView: View {
                     
                     Text(lessonData.title)
                         .font(.system(size: 28, weight: .bold))
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 8)
@@ -129,18 +131,19 @@ struct NewLessonView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     Text("What is it?")
                         .font(.system(size: 20, weight: .bold))
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                     
                     Text(lessonData.explanation)
                         .font(.system(size: 15, weight: .regular))
-                        .foregroundColor(.white.opacity(0.85))
+                        .foregroundColor(.black.opacity(0.8))
                         .lineSpacing(4)
                 }
                 .padding(20)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(
                     RoundedRectangle(cornerRadius: 16)
-                        .fill(Color(hex: "2a2a2a"))
+                        .fill(cardBackground)
+                        .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 5)
                 )
                 .padding(.horizontal, 20)
                 
@@ -148,7 +151,7 @@ struct NewLessonView: View {
                 VStack(alignment: .leading, spacing: 16) {
                     Text("Examples")
                         .font(.system(size: 20, weight: .bold))
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                     
                     ForEach(lessonData.examples, id: \.self) { example in
                         VStack(alignment: .leading, spacing: 8) {
@@ -159,13 +162,13 @@ struct NewLessonView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .background(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .fill(Color.black.opacity(0.5))
+                                        .fill(secondaryBackground)
                                 )
                             
                             if let explanation = example.explanation {
                                 Text(explanation)
                                     .font(.system(size: 13, weight: .regular))
-                                    .foregroundColor(.white.opacity(0.7))
+                                    .foregroundColor(.black.opacity(0.7))
                             }
                         }
                     }
@@ -176,6 +179,7 @@ struct NewLessonView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     HStack(spacing: 8) {
                         Image(systemName: "lightbulb.fill")
+                        
                             .foregroundColor(.yellow)
                         Text("Key Points to Remember")
                             .font(.system(size: 18, weight: .bold))
@@ -197,7 +201,7 @@ struct NewLessonView: View {
                 .background(
                     RoundedRectangle(cornerRadius: 16)
                         .fill(LinearGradient(
-                            colors: [Color.purple.opacity(0.6), Color.blue.opacity(0.6)],
+                            colors: [Color.purple.opacity(0.8), Color.blue.opacity(0.8)],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ))
@@ -240,18 +244,18 @@ struct NewLessonView: View {
                 HStack {
                     Text(lessonData.title)
                         .font(.system(size: 22, weight: .bold))
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                     Spacer()
                 }
                 
                 Text("Question \(currentQuestionIndex + 1) of \(lessonData.quizQuestions.count)")
                     .font(.system(size: 14, weight: .medium))
-                    .foregroundColor(.white.opacity(0.6))
+                    .foregroundColor(.black.opacity(0.6))
                 
                 GeometryReader { geometry in
                     ZStack(alignment: .leading) {
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.white.opacity(0.2))
+                            .fill(Color.black.opacity(0.1))
                             .frame(height: 8)
                         
                         RoundedRectangle(cornerRadius: 4)
@@ -273,7 +277,7 @@ struct NewLessonView: View {
                     // Question
                     Text(question.question)
                         .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 20)
                     
@@ -295,13 +299,13 @@ struct NewLessonView: View {
                                 HStack(spacing: 12) {
                                     Text(String(UnicodeScalar(65 + index)!))
                                         .font(.system(size: 18, weight: .bold))
-                                        .foregroundColor(.white)
+                                        .foregroundColor(.black)
                                         .frame(width: 32, height: 32)
-                                        .background(Circle().fill(Color.white.opacity(0.2)))
+                                        .background(Circle().fill(Color.black.opacity(0.1)))
                                     
                                     Text(option)
                                         .font(.system(size: 16, weight: .medium))
-                                        .foregroundColor(.white)
+                                        .foregroundColor(.black)
                                     
                                     Spacer()
                                 }
@@ -309,6 +313,7 @@ struct NewLessonView: View {
                                 .background(
                                     RoundedRectangle(cornerRadius: 12)
                                         .fill(answerBackgroundColor(option, correctAnswer: question.correctAnswer))
+                                        .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
                                 )
                             }
                             .disabled(showingResult)
@@ -325,10 +330,10 @@ struct NewLessonView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Current Score")
                         .font(.system(size: 12, weight: .medium))
-                        .foregroundColor(.white.opacity(0.6))
+                        .foregroundColor(.black.opacity(0.6))
                     Text("\(score)")
                         .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(.white)
+                        .foregroundColor(.black)
                 }
                 
                 Spacer()
@@ -336,14 +341,14 @@ struct NewLessonView: View {
                 VStack(alignment: .trailing, spacing: 4) {
                     Text("Correct Answers")
                         .font(.system(size: 12, weight: .medium))
-                        .foregroundColor(.white.opacity(0.6))
+                        .foregroundColor(.black.opacity(0.6))
                     Text("\(score / 100)/\(lessonData.quizQuestions.count)")
                         .font(.system(size: 24, weight: .bold))
                         .foregroundColor(swiftColor)
                 }
             }
             .padding(20)
-            .background(Color(hex: "2a2a2a"))
+            .background(Color.white.shadow(color: .black.opacity(0.05), radius: 10, y: -5))
         }
     }
     
@@ -365,7 +370,7 @@ struct NewLessonView: View {
             
             Text("Amazing Work! 🎉")
                 .font(.system(size: 32, weight: .bold))
-                .foregroundColor(.white)
+                .foregroundColor(.black)
             
             Text("You scored \(score) points!")
                 .font(.system(size: 20, weight: .medium))
@@ -373,7 +378,7 @@ struct NewLessonView: View {
             
             Text("\(score / 100)/\(lessonData.quizQuestions.count) correct answers")
                 .font(.system(size: 16, weight: .regular))
-                .foregroundColor(.white.opacity(0.7))
+                .foregroundColor(.black.opacity(0.7))
             
             Spacer()
             
@@ -428,16 +433,16 @@ struct NewLessonView: View {
     
     private func answerBackgroundColor(_ answer: String, correctAnswer: String) -> Color {
         if !showingResult {
-            return Color(hex: "2a2a2a")
+            return .white // Default light mode card
         }
         
         if answer == correctAnswer {
-            return Color.green.opacity(0.3)
+            return Color.green.opacity(0.2)
         } else if answer == selectedAnswer {
-            return Color.red.opacity(0.3)
+            return Color.red.opacity(0.2)
         }
         
-        return Color(hex: "2a2a2a")
+        return .white
     }
     
     private func startTimer() {
