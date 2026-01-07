@@ -32,7 +32,7 @@ struct HomeScreen: View {
         case 3:
             return URL(string: "https://build.spline.design/FVsJNvwkVCFlaBSLEuhJ/scene.splineswift")!
         case 4:
-            return URL(string: "https://build.spline.design/BpNFhExzB2HK5bOGlafg/scene.splineswift")!
+            return URL(string: "https://build.spline.design/EKPmjXqonYXCpuwbsZe4/scene.splineswift")!
         default:
             return URL(string: "https://build.spline.design/ss3bhSleXBVYfeIqJNPO/scene.splineswift")!
         }
@@ -45,19 +45,17 @@ struct HomeScreen: View {
 
     var body: some View {
         ZStack {
-            // 🔹 Background Layer
-            GeometryReader { geo in
-                ZStack {
-                    Color.black // Fallback
-                    
-                    SplineView(sceneFileURL: splineURL(for: currentLevel))
-                        .id("spline-bg-\(currentLevel)")
-                        .opacity(1.0)
-                }
-                .frame(width: geo.size.width, height: geo.size.height)
-            }
-            .ignoresSafeArea()
-
+            // 1. Root Background
+            Color.black.ignoresSafeArea()
+            
+            // 2. Spline Background (Layered correctly)
+            SplineView(sceneFileURL: splineURL(for: currentLevel))
+                .id("spline-bg-id-\(currentLevel)")
+                .ignoresSafeArea()
+                .transition(.opacity)
+                .animation(.easeInOut(duration: 0.6), value: currentLevel)
+            
+            // 3. UI Layer
             VStack(spacing: 0) {
                 // Top spacing
                 Spacer().frame(height: 20)
