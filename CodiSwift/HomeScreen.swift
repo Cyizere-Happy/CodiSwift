@@ -6,35 +6,37 @@ struct HomeScreen: View {
     // MARK: - State
     @State private var currentLevel = 1
     @State private var showLesson = false
-    @State private var lessonCompleted = false  // Tracks completion for current level
-    @State private var isExploring = false  // Tracks explore mode
+    @State private var lessonCompleted = false
+    @State private var isExploring = false
 
     // MARK: - Persistent Progress
     @AppStorage("completedLevel1") private var completedLevel1 = false
     @AppStorage("completedLevel2") private var completedLevel2 = false
     @AppStorage("completedLevel3") private var completedLevel3 = false
+    @AppStorage("completedLevel4") private var completedLevel4 = false
+    @AppStorage("completedLevel5") private var completedLevel5 = false
+    @AppStorage("completedLevel6") private var completedLevel6 = false
 
     // MARK: - Level Data
     private let levels: [Int: String] = [
         1: "Beginner: Learn Swift basics and simple exercises.",
         2: "Intermediate: Functions, loops, and SwiftUI views.",
         3: "Advanced: Combine, animations, and app architecture.",
-        4: "Mastery: Arrays and Dictionaries for data management."
+        4: "Mastery: Arrays and Dictionaries for data management.",
+        5: "Expert: Structs, Classes, and Reference Types.",
+        6: "Master: Discover Optionals and safely handling nil values."
     ]
 
     // MARK: - Spline URLs
     private func splineURL(for level: Int) -> URL {
         switch level {
-        case 1:
-            return URL(string: "https://build.spline.design/ss3bhSleXBVYfeIqJNPO/scene.splineswift")!
-        case 2:
-            return URL(string: "https://build.spline.design/aJaptQp1Nuq4m4C7w8Du/scene.splineswift")!
-        case 3:
-            return URL(string: "https://build.spline.design/FVsJNvwkVCFlaBSLEuhJ/scene.splineswift")!
-        case 4:
-            return URL(string: "https://build.spline.design/EKPmjXqonYXCpuwbsZe4/scene.splineswift")!
-        default:
-            return URL(string: "https://build.spline.design/ss3bhSleXBVYfeIqJNPO/scene.splineswift")!
+        case 1: return URL(string: "https://build.spline.design/ss3bhSleXBVYfeIqJNPO/scene.splineswift")!
+        case 2: return URL(string: "https://build.spline.design/aJaptQp1Nuq4m4C7w8Du/scene.splineswift")!
+        case 3: return URL(string: "https://build.spline.design/FVsJNvwkVCFlaBSLEuhJ/scene.splineswift")!
+        case 4: return URL(string: "https://build.spline.design/EKPmjXqonYXCpuwbsZe4/scene.splineswift")!
+        case 5: return URL(string: "https://build.spline.design/ECXA7Tr-GbGO3T7eEiSr/scene.splineswift")!
+        case 6: return URL(string: "https://build.spline.design/KXEJJvHsFTPiKduFt0W9/scene.splineswift")!
+        default: return URL(string: "https://build.spline.design/ss3bhSleXBVYfeIqJNPO/scene.splineswift")!
         }
     }
 
@@ -45,25 +47,19 @@ struct HomeScreen: View {
 
     var body: some View {
         ZStack {
-            // 1. Root Background
+            // Background
             Color.black.ignoresSafeArea()
-            
-            // 2. Spline Background (Layered correctly)
             SplineView(sceneFileURL: splineURL(for: currentLevel))
-                .id("spline-bg-id-\(currentLevel)")
                 .ignoresSafeArea()
+                .id("spline-bg-id-\(currentLevel)")
                 .transition(.opacity)
                 .animation(.easeInOut(duration: 0.6), value: currentLevel)
-            
-            // 3. UI Layer
-            VStack(spacing: 0) {
-                // Top spacing
-                Spacer().frame(height: 20)
-                
-                // Level selector/viewer
-                if !isExploring {
+
+            // MARK: - Level Card (Top)
+            if !isExploring {
+                VStack {
                     TabView(selection: $currentLevel) {
-                        ForEach(1...4, id: \.self) { level in
+                        ForEach(1...6, id: \.self) { level in
                             levelCard(for: level)
                                 .padding(.horizontal, 20)
                                 .tag(level)
@@ -71,43 +67,38 @@ struct HomeScreen: View {
                     }
                     .tabViewStyle(.page(indexDisplayMode: .always))
                     .frame(height: 250)
-                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .padding(.top, -40) // optional safe area spacing
+
+                    Spacer()
                 }
+                .frame(maxHeight: .infinity)
+                .transition(.move(edge: .top).combined(with: .opacity))
+            }
 
-                Spacer()
-
-                // CodiSwift logo - animated
-                if !isExploring {
+            // MARK: - Logo (Bottom)
+            if !isExploring {
+                VStack {
+                    Spacer()
                     HStack(spacing: 0) {
-                        Text("Codi")
-                            .foregroundColor(codiColor)
-                        Text("Swift")
-                            .foregroundColor(swiftColor)
+                        Text("Codi").foregroundColor(codiColor)
+                        Text("Swift").foregroundColor(swiftColor)
                     }
                     .font(.largeTitle.bold())
                     .shadow(radius: 10)
+                    .padding(.bottom, 100)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
-
-                Spacer().frame(height: isExploring ? 0 : 120) // Adjust for tab bar
             }
-            
-            // Small floating explore button - top right corner
+
+            // MARK: - Explore Button (Floating)
             if !isExploring {
                 VStack {
                     HStack {
                         Spacer()
-                        
                         Button {
-                            withAnimation(.easeInOut(duration: 0.6)) {
-                                isExploring = true
-                            }
-                            
-                            // Auto return after 5 seconds
+                            withAnimation(.easeInOut(duration: 0.6)) { isExploring = true }
                             DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                                withAnimation(.easeInOut(duration: 0.6)) {
-                                    isExploring = false
-                                }
+                                withAnimation(.easeInOut(duration: 0.6)) { isExploring = false }
                             }
                         } label: {
                             Image(systemName: "sparkles")
@@ -123,34 +114,34 @@ struct HomeScreen: View {
                         .padding(.trailing, 20)
                         .padding(.top, 280)
                     }
-                    
                     Spacer()
                 }
                 .transition(.scale.combined(with: .opacity))
             }
         }
-        // 🔹 Lesson Sheet
+        // Lesson Sheet
         .sheet(isPresented: $showLesson) {
             NewLessonView(level: currentLevel) { didComplete in
-                // Update current lesson completion immediately
                 lessonCompleted = didComplete
-
-                // Persist completion
                 switch currentLevel {
                 case 1: completedLevel1 = didComplete
                 case 2: completedLevel2 = didComplete
                 case 3: completedLevel3 = didComplete
+                case 4: completedLevel4 = didComplete
+                case 5: completedLevel5 = didComplete
+                case 6: completedLevel6 = didComplete
                 default: break
                 }
             }
         }
-        // 🔹 Reset lessonCompleted when changing levels
         .onChange(of: currentLevel) { newLevel in
             switch newLevel {
             case 1: lessonCompleted = completedLevel1
             case 2: lessonCompleted = completedLevel2
             case 3: lessonCompleted = completedLevel3
-            case 4: lessonCompleted = false
+            case 4: lessonCompleted = completedLevel4
+            case 5: lessonCompleted = completedLevel5
+            case 6: lessonCompleted = completedLevel6
             default: lessonCompleted = false
             }
         }
@@ -171,8 +162,7 @@ struct HomeScreen: View {
 
                 Spacer()
                 if !isLevelUnlocked(level) {
-                    Image(systemName: "lock.fill")
-                        .foregroundColor(.gray)
+                    Image(systemName: "lock.fill").foregroundColor(.gray)
                 } else {
                     Text("👋").font(.title2)
                 }
@@ -186,16 +176,12 @@ struct HomeScreen: View {
                 .font(.subheadline)
                 .foregroundColor(.black.opacity(0.75))
 
-            // Buttons Row
             HStack {
-                // Learn Button
                 Button {
                     showLesson = true
                 } label: {
                     HStack {
-                        if !isLevelUnlocked(level) {
-                            Image(systemName: "lock.fill")
-                        }
+                        if !isLevelUnlocked(level) { Image(systemName: "lock.fill") }
                         Text(isLevelUnlocked(level) ? "Learn Now" : "Locked")
                     }
                     .font(.subheadline.bold())
@@ -206,18 +192,18 @@ struct HomeScreen: View {
                     .cornerRadius(12)
                 }
                 .disabled(!isLevelUnlocked(level))
-                
+
                 Spacer()
-                
-                if isLevelUnlocked(level) && level < 4 && (
+
+                if isLevelUnlocked(level) && level < 5 && (
                     (level == 1 && completedLevel1) ||
                     (level == 2 && completedLevel2) ||
-                    (level == 3 && completedLevel3)
+                    (level == 3 && completedLevel3) ||
+                    (level == 4 && completedLevel4) ||
+                    (level == 5 && completedLevel5)
                 ) {
                     Button {
-                        withAnimation(.spring()) {
-                            currentLevel = level + 1
-                        }
+                        withAnimation(.spring()) { currentLevel = level + 1 }
                     } label: {
                         HStack(spacing: 4) {
                             Text("Next Level")
@@ -232,7 +218,7 @@ struct HomeScreen: View {
                     }
                 }
             }
-            .padding(.top, 6)
+            .padding(.top, 8)
         }
         .padding(18)
         .background(
@@ -249,6 +235,8 @@ struct HomeScreen: View {
         case 2: return "Intermediate Swift"
         case 3: return "Advanced Swift"
         case 4: return "Data Mastery"
+        case 5: return "Structs & Classes"
+        case 6: return "Swift Optionals"
         default: return "Swift Journey"
         }
     }
@@ -259,16 +247,10 @@ struct HomeScreen: View {
         case 2: return completedLevel1
         case 3: return completedLevel2
         case 4: return completedLevel3
+        case 5: return completedLevel4
+        case 6: return completedLevel5
         default: return false
         }
-    }
-
-    private func goToNextLevel() {
-        if currentLevel == 1 && lessonCompleted { currentLevel = 2 }
-        else if currentLevel == 2 && lessonCompleted { currentLevel = 3 }
-        else if currentLevel == 3 && lessonCompleted { currentLevel = 4 }
-
-        // lessonCompleted will be updated automatically via .onChange
     }
 }
 

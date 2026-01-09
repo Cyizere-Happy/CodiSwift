@@ -35,60 +35,62 @@ struct MainTabView: View {
                 }
             }
             
-            // Custom Tab Bar at b
+            // Custom Tab Bar at bottom
             VStack {
                 Spacer()
                 CustomTabBar(selectedTab: $selectedTab)
-                    .edgesIgnoringSafeArea(.bottom)
             }
+            .ignoresSafeArea(.keyboard) // Prevent tab bar from moving with keyboard
         }
-        .edgesIgnoringSafeArea(.all)
-    }
-}
-
-// Wrapper to add bottom padding for tab bar
-struct TabContentWrapper<Content: View>: View {
-    let content: Content
-    
-    init(@ViewBuilder content: () -> Content) {
-        self.content = content()
+        .edgesIgnoringSafeArea(.bottom) // Only ignore bottom for tab bar
+        .toolbar(.hidden, for: .navigationBar) // Explicitly hide nav bar
+        .navigationBarBackButtonHidden(true)
     }
     
-    var body: some View {
-        content
-            .padding(.bottom, 0) // No extra padding needed since
+    // Wrapper to add bottom padding for tab bar
+    struct TabContentWrapper<Content: View>: View {
+        let content: Content
+        
+        init(@ViewBuilder content: () -> Content) {
+            self.content = content()
+        }
+        
+        var body: some View {
+            content
+                .padding(.bottom, 0)
+        }
     }
-}
-
-// Placeholder view for tabs that aren't implemented yet
-struct PlaceholderView: View {
-    let title: String
-    let icon: String
     
-    let swiftColor = Color(hex: "FF684B")
-    
-    var body: some View {
-        ZStack {
-            // Gradient background
-            LinearGradient(
-                colors: [Color(hex: "232223"), Color(hex: "1a1a1a")],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
-            
-            VStack(spacing: 20) {
-                Image(systemName: icon)
-                    .font(.system(size: 80))
-                    .foregroundColor(swiftColor)
+    // Placeholder view for tabs that aren't implemented yet
+    struct PlaceholderView: View {
+        let title: String
+        let icon: String
+        
+        let swiftColor = Color(hex: "FF684B")
+        
+        var body: some View {
+            ZStack {
+                // Gradient background
+                LinearGradient(
+                    colors: [Color(hex: "232223"), Color(hex: "1a1a1a")],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .ignoresSafeArea()
                 
-                Text(title)
-                    .font(.largeTitle.bold())
-                    .foregroundColor(.white)
-                
-                Text("Coming Soon!")
-                    .font(.title3)
-                    .foregroundColor(.white.opacity(0.7))
+                VStack(spacing: 20) {
+                    Image(systemName: icon)
+                        .font(.system(size: 80))
+                        .foregroundColor(swiftColor)
+                    
+                    Text(title)
+                        .font(.largeTitle.bold())
+                        .foregroundColor(.white)
+                    
+                    Text("Coming Soon!")
+                        .font(.title3)
+                        .foregroundColor(.white.opacity(0.7))
+                }
             }
         }
     }

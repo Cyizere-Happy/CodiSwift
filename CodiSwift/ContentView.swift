@@ -94,6 +94,7 @@ struct ContentView: View {
             .navigationDestination(isPresented: $goToHome) {
                 MainTabView()
                     .navigationBarBackButtonHidden(true)
+                    .navigationBarHidden(true) // Fix: Hide nav bar to prevent layout push
             }
             .navigationBarHidden(true)
         }

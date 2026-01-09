@@ -646,6 +646,106 @@ struct LessonData {
                     )
                 ]
             )
+        case 5:
+            return LessonData(
+                title: "Structs & Classes",
+                explanation: "Structs and Classes are the building blocks of your code! They both hold data and functions, but they behave differently. Structs are 'Value Types' (copies are made), while Classes are 'Reference Types' (shared access). Think of a Struct like a photocopy of a drawing, and a Class like the original drawing itself!",
+                examples: [
+                    CodeExample(
+                        code: "struct Hero {\n    var name: String\n}\nvar hero1 = Hero(name: \"Flash\")\nvar hero2 = hero1 // Copy created\nhero2.name = \"Batman\"\n// hero1 is still \"Flash\"!",
+                        explanation: "Structs create independent copies. Changing one doesn't affect the other."
+                    ),
+                    CodeExample(
+                        code: "class Robot {\n    var model: String\n    init(model: String) { self.model = model }\n}\nvar rob1 = Robot(model: \"T-800\")\nvar rob2 = rob1 // Shared reference\nrob2.model = \"Wall-E\"\n// rob1 is now \"Wall-E\" too!",
+                        explanation: "Classes share the same instance. Changing one affects all references!"
+                    )
+                ],
+                keyPoints: [
+                    "Structs create unique copies (Value Types)",
+                    "Classes share the same instance (Reference Types)",
+                    "Swift prefers Structs for simple data",
+                    "Classes support Inheritance (subclasses)"
+                ],
+                quizQuestions: [
+                    QuizQuestion(
+                        question: "Which one creates a copy when assigned to a new variable?",
+                        options: ["Struct", "Class", "Both", "None"],
+                        correctAnswer: "Struct"
+                    ),
+                    QuizQuestion(
+                        question: "What kind of type is a Class?",
+                        options: ["Value Type", "Reference Type", "Copy Type", "Static Type"],
+                        correctAnswer: "Reference Type"
+                    ),
+                    QuizQuestion(
+                        question: "If you change a copy of a Struct, does the original change?",
+                        options: ["Yes", "No", "Sometimes", "Only if lucky"],
+                        correctAnswer: "No"
+                    ),
+                    QuizQuestion(
+                        question: "Which one is generally preferred for simple data in Swift?",
+                        options: ["Struct", "Class", "Enum", "Protocol"],
+                        correctAnswer: "Struct"
+                    ),
+                    QuizQuestion(
+                        question: "Can Classes inherit from other Classes?",
+                        options: ["Yes", "No", "Never", "Only Structs"],
+                        correctAnswer: "Yes"
+                    )
+                ]
+            )
+        case 6:
+            return LessonData(
+                title: "Optionals & Guard",
+                explanation: "Optionals are like a box that might have something inside, or might be empty (nil)! They help us handle situations where data could be missing. To get the value out safely, we use 'Unwrapping' techniques like 'if let' or 'guard let'. Think of it like checking a locker - if it's not empty, you take the stuff out!",
+                examples: [
+                    CodeExample(
+                        code: "var name: String? = \"Alex\"\nname = nil // Now it's empty!",
+                        explanation: "Adding a '?' after a type makes it an Optional (can be nil)."
+                    ),
+                    CodeExample(
+                        code: "if let safeName = name {\n    print(\"Hello, \\(safeName)\")\n} else {\n    print(\"Name is missing!\")\n}",
+                        explanation: "'if let' checks if the box has something and lets you use it safely."
+                    ),
+                    CodeExample(
+                        code: "guard let safeName = name else { return }\nprint(\"Ready to go, \\(safeName)!\")",
+                        explanation: "'guard' is like a bouncer - it stops the code early if the value is missing."
+                    )
+                ],
+                keyPoints: [
+                    "Optionals can store a value or 'nil'",
+                    "Use '?' to declare an Optional",
+                    "Never 'force unwrap' (!) unless you are 100% sure",
+                    "'guard' helps keep code clean and readable"
+                ],
+                quizQuestions: [
+                    QuizQuestion(
+                        question: "What symbol is used to declare an Optional?",
+                        options: ["!", "?", "&", "*"],
+                        correctAnswer: "?"
+                    ),
+                    QuizQuestion(
+                        question: "What does 'nil' mean in Swift?",
+                        options: ["Zero", "Empty/No value", "False", "Error"],
+                        correctAnswer: "Empty/No value"
+                    ),
+                    QuizQuestion(
+                        question: "Which technique is best for 'early exit' from a function?",
+                        options: ["if let", "switch", "guard let", "while"],
+                        correctAnswer: "guard let"
+                    ),
+                    QuizQuestion(
+                        question: "What happens if you 'force unwrap' (!) a nil value?",
+                        options: ["Returns 0", "Returns nil", "App crashes", "Nothing"],
+                        correctAnswer: "App crashes"
+                    ),
+                    QuizQuestion(
+                        question: "What is the process of getting a value out of an Optional?",
+                        options: ["Opening", "Unwrapping", "Extracting", "Decoding"],
+                        correctAnswer: "Unwrapping"
+                    )
+                ]
+            )
         default:
             return LessonData(
                 title: "Swift Journey",
