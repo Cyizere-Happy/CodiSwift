@@ -110,17 +110,25 @@ struct HomeView: View {
                                             .font(.system(size: 18, weight: .bold))
                                             .foregroundColor(.black)
                                         
-                                        VStack(alignment: .leading, spacing: 8) {
-                                            ForEach(userManager.currentUser.dailyQuests) { quest in
-                                                QuestRefinedRow(
-                                                    icon: quest.icon,
-                                                    title: quest.title,
-                                                    progress: quest.progress,
-                                                    target: quest.target
-                                                )
+                                        if userManager.currentUser.dailyQuests.isEmpty {
+                                            Text("No quests available today. Come back tomorrow! 😴")
+                                                .font(.system(size: 13))
+                                                .foregroundColor(.gray)
+                                                .frame(maxWidth: .infinity, alignment: .center)
+                                                .padding(.vertical, 20)
+                                        } else {
+                                            VStack(alignment: .leading, spacing: 8) {
+                                                ForEach(userManager.currentUser.dailyQuests) { quest in
+                                                    QuestRefinedRow(
+                                                        icon: quest.icon,
+                                                        title: quest.title,
+                                                        progress: quest.progress,
+                                                        target: quest.target
+                                                    )
+                                                }
                                             }
+                                            .foregroundColor(.black)
                                         }
-                                        .foregroundColor(.black)
                                     }
                                     .padding(14)
                                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -128,24 +136,37 @@ struct HomeView: View {
                                     .cornerRadius(20)
                                     .shadow(color: .black.opacity(0.03), radius: 10, y: 5)
                                     
-                                    let allDone = userManager.currentUser.dailyQuests.allSatisfy { $0.isCompleted }
+                                    let hasQuests = !userManager.currentUser.dailyQuests.isEmpty
+                                    let allDone = hasQuests && userManager.currentUser.dailyQuests.allSatisfy { $0.isCompleted }
                                     let isClaimed = userManager.currentUser.hasClaimedDailyBonus
                                     
                                     Button(action: { 
                                         _ = userManager.claimDailyBonus()
                                     }) {
-                                        VStack(spacing: 2) {
-                                            Text(isClaimed ? "Done" : "Claim").font(.system(size: 12, weight: .bold))
-                                            Text(isClaimed ? "✅" : "45").font(.system(size: 18, weight: .black))
+                                        VStack(spacing: 4) {
+                                            Text(isClaimed ? "DONE" : "CLAIM")
+                                                .font(.system(size: 10, weight: .black))
+                                            Text(isClaimed ? "✅" : "45")
+                                                .font(.system(size: 20, weight: .black))
+                                            if !isClaimed {
+                                                Text("PTS")
+                                                    .font(.system(size: 8, weight: .bold))
+                                            }
                                         }
-                                        .foregroundColor(.white)
-                                        .frame(width: 70, height: 70)
+                                        .foregroundColor(allDone && !isClaimed ? .white : .gray)
+                                        .frame(width: 72, height: 72)
                                         .background(
-                                            isClaimed ? AnyShapeStyle(Color.green) :
-                                            allDone ? AnyShapeStyle(LinearGradient(colors: [Color(hex: "FF8C4B"), Color(hex: "FF684B")], startPoint: .top, endPoint: .bottom)) :
-                                            AnyShapeStyle(Color.gray.opacity(0.3))
+                                            ZStack {
+                                                if isClaimed {
+                                                    Circle().fill(Color.green.opacity(0.1))
+                                                    Circle().stroke(Color.green, lineWidth: 2)
+                                                } else if allDone {
+                                                    Circle().fill(swiftColor)
+                                                } else {
+                                                    Circle().fill(Color.gray.opacity(0.1))
+                                                }
+                                            }
                                         )
-                                        .clipShape(Circle())
                                         .shadow(color: (allDone && !isClaimed) ? swiftColor.opacity(0.3) : .clear, radius: 8, y: 4)
                                     }
                                     .disabled(!allDone || isClaimed)
@@ -162,31 +183,31 @@ struct HomeView: View {
                                             .font(.system(size: 11, weight: .bold))
                                             .padding(.horizontal, 10)
                                             .padding(.vertical, 5)
-                                            .background(Color.orange.opacity(0.1))
-                                            .foregroundColor(.orange)
+                                            .background(swiftColor.opacity(0.1))
+                                            .foregroundColor(swiftColor)
                                             .cornerRadius(8)
                                     }
                                     
                                     HStack(spacing: 12) {
                                         HStack(spacing: 12) {
                                             Text("\(userManager.currentUser.completedLessons.count + 1)")
-                                                .font(.system(size: 24, weight: .black))
+                                                .font(.system(size: 20, weight: .black))
                                                 .foregroundColor(.white)
-                                                .frame(width: 48, height: 48)
-                                                .background(Circle().fill(LinearGradient(colors: [.orange, .red], startPoint: .top, endPoint: .bottom)))
+                                                .frame(width: 44, height: 44)
+                                                .background(Circle().fill(swiftColor))
                                             
-                                            VStack(alignment: .leading, spacing: 4) {
+                                            VStack(alignment: .leading, spacing: 6) {
                                                 Text("Level \(userManager.currentUser.completedLessons.count + 1)")
                                                     .font(.system(size: 14, weight: .bold))
                                                     .foregroundColor(.black)
                                                 Capsule()
-                                                    .fill(Color.gray.opacity(0.1))
-                                                    .frame(height: 6)
+                                                    .fill(Color.black.opacity(0.05))
+                                                    .frame(height: 5)
                                                     .overlay(alignment: .leading) {
                                                         let progress = CGFloat(userManager.currentUser.completedLessons.count) / 4.0
                                                         GeometryReader { geo in
                                                             Capsule()
-                                                                .fill(LinearGradient(colors: [.cyan, .blue], startPoint: .leading, endPoint: .trailing))
+                                                                .fill(swiftColor)
                                                                 .frame(width: geo.size.width * progress)
                                                         }
                                                     }
@@ -198,16 +219,26 @@ struct HomeView: View {
                                         .cornerRadius(20)
                                         
                                         HStack(spacing: 8) {
-                                            Image(systemName: "calendar")
-                                                .font(.system(size: 18))
-                                                .frame(width: 44, height: 44)
-                                                .background(Color.white)
-                                                .cornerRadius(12)
-                                            Image(systemName: "cube.fill")
-                                                .font(.system(size: 18))
-                                                .frame(width: 44, height: 44)
-                                                .background(Color.white)
-                                                .cornerRadius(12)
+                                            VStack(spacing: 4) {
+                                                Image(systemName: "calendar")
+                                                    .font(.system(size: 16))
+                                                    .frame(width: 44, height: 44)
+                                                    .background(Color.white)
+                                                    .cornerRadius(12)
+                                                Text("Calendar")
+                                                    .font(.system(size: 8, weight: .medium))
+                                                    .foregroundColor(.gray)
+                                            }
+                                            VStack(spacing: 4) {
+                                                Image(systemName: "cube.fill")
+                                                    .font(.system(size: 16))
+                                                    .frame(width: 44, height: 44)
+                                                    .background(Color.white)
+                                                    .cornerRadius(12)
+                                                Text("Assets")
+                                                    .font(.system(size: 8, weight: .medium))
+                                                    .foregroundColor(.gray)
+                                            }
                                         }
                                         .foregroundColor(swiftColor)
                                     }
@@ -241,23 +272,23 @@ struct QuestRefinedRow: View {
     
     var body: some View {
         HStack(spacing: 8) {
-            Text(icon).font(.system(size: 14))
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.system(size: 12, weight: .medium))
+            Text(icon).font(.system(size: 18))
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title).font(.system(size: 13, weight: .bold))
                 
                 // Mini Progress Bar
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
                         Capsule()
                             .fill(Color.black.opacity(0.05))
-                            .frame(height: 4)
+                            .frame(height: 3)
                         
                         Capsule()
-                            .fill(isDone ? Color.green : Color.orange)
-                            .frame(width: geo.size.width * CGFloat(progress) / CGFloat(target), height: 4)
+                            .fill(isDone ? Color.green : Color.swiftColor)
+                            .frame(width: geo.size.width * CGFloat(progress) / CGFloat(target), height: 3)
                     }
                 }
-                .frame(height: 4)
+                .frame(height: 3)
             }
             
             Spacer()

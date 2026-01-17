@@ -17,7 +17,7 @@ struct PracticeView: View {
                 name: "Variables",
                 emoji: "📦", 
                 color: "FF684B", // Updated to match Brand Orange
-                challengeCount: 5,
+                challengeCount: 7,
                 iconSystemName: "cube.box.fill"
             ),
             ChallengeCategory(
@@ -25,7 +25,7 @@ struct PracticeView: View {
                 name: "Functions",
                 emoji: "⚡️",
                 color: "3B7AD9", // Blue
-                challengeCount: 5,
+                challengeCount: 7,
                 iconSystemName: "bolt.fill"
             ),
             ChallengeCategory(
@@ -33,7 +33,7 @@ struct PracticeView: View {
                 name: "Loops",
                 emoji: "🔄",
                 color: "58B043", // Green
-                challengeCount: 5,
+                challengeCount: 7,
                 iconSystemName: "arrow.triangle.2.circlepath"
             ),
             ChallengeCategory(
@@ -41,7 +41,7 @@ struct PracticeView: View {
                 name: "Conditionals",
                 emoji: "🤔",
                 color: "FF684B", // Updated to Orange
-                challengeCount: 5,
+                challengeCount: 7,
                 iconSystemName: "questionmark.circle.fill"
             ),
             ChallengeCategory(
@@ -49,7 +49,7 @@ struct PracticeView: View {
                 name: "Collections",
                 emoji: "📚",
                 color: "FF684B", // Updated to Orange
-                challengeCount: 5,
+                challengeCount: 7,
                 iconSystemName: "rectangle.stack.fill"
             ),
             ChallengeCategory(
@@ -57,8 +57,32 @@ struct PracticeView: View {
                 name: "Structs",
                 emoji: "🏗️",
                 color: "607D8B", // Blue Grey
-                challengeCount: 5,
+                challengeCount: 7,
                 iconSystemName: "building.2.fill"
+            ),
+            ChallengeCategory(
+                id: "enums",
+                name: "Enums",
+                emoji: "🎨",
+                color: "9C27B0", // Purple
+                challengeCount: 3,
+                iconSystemName: "list.bullet.rectangle"
+            ),
+            ChallengeCategory(
+                id: "optionals",
+                name: "Optionals",
+                emoji: "❓",
+                color: "E91E63", // Pink
+                challengeCount: 3,
+                iconSystemName: "questionmark.diamond.fill"
+            ),
+            ChallengeCategory(
+                id: "closures",
+                name: "Closures",
+                emoji: "🧬",
+                color: "FF9800", // Orange
+                challengeCount: 2,
+                iconSystemName: "function"
             )
         ]
     }
@@ -451,6 +475,28 @@ struct Challenge: Identifiable {
                     solution: "var firstName = \"\"\nvar lastName = \"\"\nvar age = 0",
                     testCases: [],
                     points: 100
+                ),
+                Challenge(
+                    id: "var6",
+                    title: "Type Annotation",
+                    description: "Explicitly declare an Int variable named level with value 1",
+                    difficulty: .easy,
+                    category: "variables",
+                    starterCode: "",
+                    solution: "var level: Int = 1",
+                    testCases: [],
+                    points: 50
+                ),
+                Challenge(
+                    id: "var7",
+                    title: "String Interpolation",
+                    description: "Use interpolation to create 'Age: \\(age)'",
+                    difficulty: .medium,
+                    category: "variables",
+                    starterCode: "let age = 10\nvar text = ",
+                    solution: "var text = \"Age: \\(age)\"",
+                    testCases: [],
+                    points: 100
                 )
             ]
         case "functions":
@@ -509,6 +555,28 @@ struct Challenge: Identifiable {
                     solution: "func calculate(a: Int, b: Int) -> Int { (a + b) * 2 }",
                     testCases: [],
                     points: 150
+                ),
+                Challenge(
+                    id: "func6",
+                    title: "Omitting Labels",
+                    description: "Define func play(_ name: String) that prints name",
+                    difficulty: .medium,
+                    category: "functions",
+                    starterCode: "",
+                    solution: "func play(_ name: String) { print(name) }",
+                    testCases: [],
+                    points: 100
+                ),
+                Challenge(
+                    id: "func7",
+                    title: "Default Values",
+                    description: "Add a default value 'Swift' to the lang parameter",
+                    difficulty: .medium,
+                    category: "functions",
+                    starterCode: "func learn(lang: String) { }",
+                    solution: "func learn(lang: String = \"Swift\") { }",
+                    testCases: [],
+                    points: 100
                 )
             ]
         case "loops":
@@ -565,6 +633,28 @@ struct Challenge: Identifiable {
                     category: "loops",
                     starterCode: "",
                     solution: "for i in 1...3 { for j in 1...3 { print(i, j) } }",
+                    testCases: [],
+                    points: 150
+                ),
+                Challenge(
+                    id: "loop6",
+                    title: "Reversed Count",
+                    description: "Loop from 5 down to 1 using reversed()",
+                    difficulty: .medium,
+                    category: "loops",
+                    starterCode: "",
+                    solution: "for i in (1...5).reversed() { print(i) }",
+                    testCases: [],
+                    points: 100
+                ),
+                Challenge(
+                    id: "loop7",
+                    title: "Array Enumeration",
+                    description: "Loop through names and print the index",
+                    difficulty: .hard,
+                    category: "loops",
+                    starterCode: "let names = [\"A\", \"B\"]\n",
+                    solution: "for (index, name) in names.enumerated() { print(index) }",
                     testCases: [],
                     points: 150
                 )
@@ -625,6 +715,28 @@ struct Challenge: Identifiable {
                     solution: "switch color { case \"red\": print(\"stop\") default: print(\"go\") }",
                     testCases: [],
                     points: 150
+                ),
+                Challenge(
+                    id: "cond6",
+                    title: "Ternary Operator",
+                    description: "Use ?: to set status to 'Big' if x > 10 or 'Small'",
+                    difficulty: .medium,
+                    category: "conditionals",
+                    starterCode: "let x = 15\nvar status = ",
+                    solution: "var status = x > 10 ? \"Big\" : \"Small\"",
+                    testCases: [],
+                    points: 100
+                ),
+                Challenge(
+                    id: "cond7",
+                    title: "Logical AND",
+                    description: "Check if both isReady and hasKey are true",
+                    difficulty: .easy,
+                    category: "conditionals",
+                    starterCode: "var isReady = true\nvar hasKey = true\n",
+                    solution: "if isReady && hasKey { print(\"Go\") }",
+                    testCases: [],
+                    points: 50
                 )
             ]
         case "collections":
@@ -683,6 +795,28 @@ struct Challenge: Identifiable {
                     solution: "let count = items.count",
                     testCases: [],
                     points: 100
+                ),
+                Challenge(
+                    id: "coll6",
+                    title: "Set Uniqueness",
+                    description: "Create a Set of Ints named 'numbers'",
+                    difficulty: .medium,
+                    category: "collections",
+                    starterCode: "",
+                    solution: "var numbers: Set<Int> = [1, 2, 3]",
+                    testCases: [],
+                    points: 100
+                ),
+                Challenge(
+                    id: "coll7",
+                    title: "Update Dictionary",
+                    description: "Set the value for key 'Alex' to 100",
+                    difficulty: .easy,
+                    category: "collections",
+                    starterCode: "var scores = [\"Alex\": 0]\n",
+                    solution: "scores[\"Alex\"] = 100",
+                    testCases: [],
+                    points: 50
                 )
             ]
         case "structs":
@@ -739,6 +873,125 @@ struct Challenge: Identifiable {
                     category: "structs",
                     starterCode: "struct Person {\n  var age: Int\n",
                     solution: "  var isAdult: Bool { age >= 18 }\n}",
+                    testCases: [],
+                    points: 150
+                ),
+                Challenge(
+                    id: "struct6",
+                    title: "Computed Area",
+                    description: "Add a computed property 'area' (w * h)",
+                    difficulty: .medium,
+                    category: "structs",
+                    starterCode: "struct Rect {\n  var w: Int\n  var h: Int\n",
+                    solution: "  var area: Int { w * h }\n}",
+                    testCases: [],
+                    points: 100
+                ),
+                Challenge(
+                    id: "struct7",
+                    title: "Mutating Method",
+                    description: "Add a mutating func to increase level",
+                    difficulty: .hard,
+                    category: "structs",
+                    starterCode: "struct Player {\n  var level = 1\n",
+                    solution: "  mutating func up() { level += 1 }\n}",
+                    testCases: [],
+                    points: 150
+                )
+            ]
+        case "enums":
+            return [
+                Challenge(
+                    id: "enum1",
+                    title: "Basic Enum",
+                    description: "Define an enum Compass with cases north, south, east, west",
+                    difficulty: .easy,
+                    category: "enums",
+                    starterCode: "",
+                    solution: "enum Compass { case north, south, east, west }",
+                    testCases: [],
+                    points: 50
+                ),
+                Challenge(
+                    id: "enum2",
+                    title: "Raw Values",
+                    description: "Define an Int enum Status with case active = 1",
+                    difficulty: .medium,
+                    category: "enums",
+                    starterCode: "",
+                    solution: "enum Status: Int { case active = 1 }",
+                    testCases: [],
+                    points: 100
+                ),
+                Challenge(
+                    id: "enum3",
+                    title: "Associated Values",
+                    description: "Define enum Result with cases success(String) and failure",
+                    difficulty: .hard,
+                    category: "enums",
+                    starterCode: "",
+                    solution: "enum Result { case success(String); case failure }",
+                    testCases: [],
+                    points: 150
+                )
+            ]
+        case "optionals":
+            return [
+                Challenge(
+                    id: "opt1",
+                    title: "Optional String",
+                    description: "Declare an optional String named name",
+                    difficulty: .easy,
+                    category: "optionals",
+                    starterCode: "",
+                    solution: "var name: String?",
+                    testCases: [],
+                    points: 50
+                ),
+                Challenge(
+                    id: "opt2",
+                    title: "If Let Binding",
+                    description: "Use if-let to unwrap name",
+                    difficulty: .medium,
+                    category: "optionals",
+                    starterCode: "let name: String? = \"Alex\"\n",
+                    solution: "if let unwrapped = name { print(unwrapped) }",
+                    testCases: [],
+                    points: 100
+                ),
+                Challenge(
+                    id: "opt3",
+                    title: "Nil Coalescing",
+                    description: "Use ?? to provide a default value 'Guest'",
+                    difficulty: .easy,
+                    category: "optionals",
+                    starterCode: "let name: String? = nil\nlet user = ",
+                    solution: "let user = name ?? \"Guest\"",
+                    testCases: [],
+                    points: 50
+                )
+            ]
+        case "closures":
+            return [
+                Challenge(
+                    id: "clos1",
+                    title: "Simple Closure",
+                    description: "Assign a closure that prints 'Hi' to let sayHi",
+                    difficulty: .medium,
+                    category: "closures",
+                    starterCode: "",
+                    solution: "let sayHi = { print(\"Hi\") }",
+                    testCases: [],
+                    points: 100
+                ),
+                Challenge(
+                    id: "clos2",
+                    title: "Trailing Closure",
+                    description: "Call func run(action: () -> Void) with trailing syntax",
+                    difficulty: .hard,
+                    category: "closures",
+                    starterCode: "func run(action: () -> Void) { action() }\n",
+                    solution: "run { print(\"Done\") }",
                     testCases: [],
                     points: 150
                 )
