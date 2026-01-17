@@ -17,12 +17,7 @@ struct NewLessonView: View {
     @State private var timeRemaining = 15
     @State private var timer: Timer?
     
-    // Brand Colors
-    let codiColor = Color(hex: "232223")
-    let swiftColor = Color(hex: "FF684B")
-    let backgroundColor = Color.white // Light mode background
-    let cardBackground = Color.white
-    let secondaryBackground = Color(uiColor: .systemGray6)
+    // Theme Colors (Now using global Color properties)
     
     enum LessonPhase {
         case study
@@ -32,7 +27,7 @@ struct NewLessonView: View {
     
     var body: some View {
         ZStack {
-            backgroundColor
+            Color.backgroundColor
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
@@ -87,7 +82,7 @@ struct NewLessonView: View {
                 .padding(.vertical, 8)
                 .background(
                     Capsule()
-                        .fill(swiftColor)
+                        .fill(Color.swiftColor)
                 )
             }
         }
@@ -104,7 +99,7 @@ struct NewLessonView: View {
                 HStack(spacing: 12) {
                     Image(systemName: "book.fill")
                         .font(.system(size: 24))
-                        .foregroundColor(swiftColor)
+                        .foregroundColor(Color.swiftColor)
                     
                     Text(lessonData.title)
                         .font(.system(size: 28, weight: .bold))
@@ -122,7 +117,7 @@ struct NewLessonView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(
                             RoundedRectangle(cornerRadius: 12)
-                                .fill(swiftColor.opacity(0.9))
+                                .fill(Color.swiftColor.opacity(0.9))
                         )
                 }
                 .padding(.horizontal, 20)
@@ -142,7 +137,7 @@ struct NewLessonView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(
                     RoundedRectangle(cornerRadius: 16)
-                        .fill(cardBackground)
+                        .fill(Color.cardBackgroundLight)
                         .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 5)
                 )
                 .padding(.horizontal, 20)
@@ -157,12 +152,12 @@ struct NewLessonView: View {
                         VStack(alignment: .leading, spacing: 8) {
                             Text(example.code)
                                 .font(.system(size: 14, design: .monospaced))
-                                .foregroundColor(swiftColor)
+                                .foregroundColor(Color.swiftColor)
                                 .padding(12)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .background(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .fill(secondaryBackground)
+                                        .fill(Color.secondaryBackground)
                                 )
                             
                             if let explanation = example.explanation {
@@ -201,10 +196,11 @@ struct NewLessonView: View {
                 .background(
                     RoundedRectangle(cornerRadius: 16)
                         .fill(LinearGradient(
-                            colors: [Color.purple.opacity(0.8), Color.blue.opacity(0.8)],
+                            colors: [Color.swiftColor, Color.swiftColor.opacity(0.7)],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         ))
+                        .shadow(color: Color.swiftColor.opacity(0.3), radius: 10, x: 0, y: 5)
                 )
                 .padding(.horizontal, 20)
                 
@@ -226,13 +222,17 @@ struct NewLessonView: View {
                     .padding(.vertical, 16)
                     .background(
                         RoundedRectangle(cornerRadius: 14)
-                            .fill(swiftColor)
-                            .shadow(color: swiftColor.opacity(0.4), radius: 8, y: 4)
+                            .fill(Color.swiftColor)
+                            .shadow(color: Color.swiftColor.opacity(0.4), radius: 8, y: 4)
                     )
                 }
+                .frame(maxWidth: 400) // Center and limit width
                 .padding(.horizontal, 20)
                 .padding(.bottom, 30)
+                .frame(maxWidth: .infinity)
             }
+            .frame(maxWidth: 800) // Center parent container
+            .frame(maxWidth: .infinity)
         }
     }
     
@@ -259,7 +259,8 @@ struct NewLessonView: View {
                             .frame(height: 8)
                         
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(swiftColor)
+                            .fill(Color.swiftColor)
+                            .stroke(Color.swiftColor, style: StrokeStyle(lineWidth: 4, lineCap: .round)) // Updated to Brand Orange
                             .frame(width: geometry.size.width * CGFloat(currentQuestionIndex + 1) / CGFloat(lessonData.quizQuestions.count), height: 8)
                     }
                 }
@@ -284,10 +285,10 @@ struct NewLessonView: View {
                     // Points
                     HStack(spacing: 6) {
                         Image(systemName: "trophy.fill")
-                            .foregroundColor(swiftColor)
+                            .foregroundColor(Color.swiftColor) // Updated to Brand Orange
                         Text("100 points")
                             .font(.system(size: 16, weight: .bold))
-                            .foregroundColor(swiftColor)
+                            .foregroundColor(Color.swiftColor)
                     }
                     
                     // Answer options
@@ -319,7 +320,9 @@ struct NewLessonView: View {
                             .disabled(showingResult)
                         }
                     }
+                    .frame(maxWidth: 500) // Center and limit width
                     .padding(.horizontal, 20)
+                    .frame(maxWidth: .infinity)
                 }
             }
             
@@ -344,7 +347,7 @@ struct NewLessonView: View {
                         .foregroundColor(.black.opacity(0.6))
                     Text("\(score / 100)/\(lessonData.quizQuestions.count)")
                         .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(swiftColor)
+                        .foregroundColor(Color.swiftColor)
                 }
             }
             .padding(20)
@@ -374,7 +377,7 @@ struct NewLessonView: View {
             
             Text("You scored \(score) points!")
                 .font(.system(size: 20, weight: .medium))
-                .foregroundColor(swiftColor)
+                .foregroundColor(Color.swiftColor)
             
             Text("\(score / 100)/\(lessonData.quizQuestions.count) correct answers")
                 .font(.system(size: 16, weight: .regular))
@@ -385,22 +388,35 @@ struct NewLessonView: View {
             Button {
                 // Track lesson completion with UserManager
                 let correctCount = score / 100
+                let isAlreadyCompleted = userManager.currentUser.completedLessons.contains(level)
+                
                 userManager.completeLesson(level, correctAnswers: correctCount, totalQuestions: lessonData.quizQuestions.count)
-                userManager.addPoints(score)
+                
+                if !isAlreadyCompleted {
+                    userManager.addPoints(score)
+                }
                 
                 onComplete(true)
                 dismiss()
             } label: {
-                Text("Continue Learning ✅")
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
-                    .background(
-                        RoundedRectangle(cornerRadius: 14)
-                            .fill(swiftColor)
-                            .shadow(color: swiftColor.opacity(0.4), radius: 8, y: 4)
-                    )
+                VStack(spacing: 4) {
+                    Text(userManager.currentUser.completedLessons.contains(level) ? "Replay Complete ✅" : "Continue Learning ✅")
+                        .font(.system(size: 18, weight: .bold))
+                    
+                    if userManager.currentUser.completedLessons.contains(level) {
+                        Text("No extra points earned for replaying")
+                            .font(.system(size: 12))
+                            .opacity(0.8)
+                    }
+                }
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+                .background(
+                    RoundedRectangle(cornerRadius: 14)
+                        .fill(Color.swiftColor)
+                        .shadow(color: Color.swiftColor.opacity(0.4), radius: 8, y: 4)
+                )
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 30)

@@ -62,16 +62,17 @@ struct HomeScreen: View {
                         ForEach(1...6, id: \.self) { level in
                             levelCard(for: level)
                                 .padding(.horizontal, 20)
+                                .frame(maxWidth: 600) // Center and limit width
                                 .tag(level)
                         }
                     }
                     .tabViewStyle(.page(indexDisplayMode: .always))
-                    .frame(height: 250)
-                    .padding(.top, -40) // optional safe area spacing
-
+                    .frame(height: 300) // Slightly taller for iPad
+                    .padding(.top, 40) // Lower the card from the top edge
+                    
                     Spacer()
                 }
-                .frame(maxHeight: .infinity)
+                .frame(maxWidth: .infinity)
                 .transition(.move(edge: .top).combined(with: .opacity))
             }
 
@@ -112,13 +113,14 @@ struct HomeScreen: View {
                                 )
                         }
                         .padding(.trailing, 20)
-                        .padding(.top, 280)
+                        .padding(.top, 330) // Adjusted for new card height/position
                     }
                     Spacer()
                 }
                 .transition(.scale.combined(with: .opacity))
             }
         }
+        .colorScheme(.light) // Force light scheme for the entire view to ensure visibility on iPad
         // Lesson Sheet
         .sheet(isPresented: $showLesson) {
             NewLessonView(level: currentLevel) { didComplete in
@@ -134,7 +136,7 @@ struct HomeScreen: View {
                 }
             }
         }
-        .onChange(of: currentLevel) { newLevel in
+        .onChange(of: currentLevel) { _, newLevel in
             switch newLevel {
             case 1: lessonCompleted = completedLevel1
             case 2: lessonCompleted = completedLevel2
@@ -170,11 +172,11 @@ struct HomeScreen: View {
 
             Text(levelName(for: level))
                 .font(.headline.bold())
-                .foregroundColor(.black)
+                .foregroundColor(.black) // Explicitly black
 
             Text(levels[level] ?? "")
                 .font(.subheadline)
-                .foregroundColor(.black.opacity(0.75))
+                .foregroundColor(.black.opacity(0.75)) // Explicitly dark
 
             HStack {
                 Button {
@@ -183,9 +185,9 @@ struct HomeScreen: View {
                     HStack {
                         if !isLevelUnlocked(level) { Image(systemName: "lock.fill") }
                         Text(isLevelUnlocked(level) ? "Learn Now" : "Locked")
+                            .foregroundColor(.white) // Enforce white on orange/gray button
                     }
                     .font(.subheadline.bold())
-                    .foregroundColor(.white)
                     .padding(.vertical, 10)
                     .padding(.horizontal, 20)
                     .background(isLevelUnlocked(level) ? swiftColor : Color.gray.opacity(0.5))
@@ -207,10 +209,11 @@ struct HomeScreen: View {
                     } label: {
                         HStack(spacing: 4) {
                             Text("Next Level")
+                                .foregroundColor(swiftColor)
                             Image(systemName: "arrow.right.circle.fill")
+                                .foregroundColor(swiftColor)
                         }
                         .font(.subheadline.bold())
-                        .foregroundColor(swiftColor)
                         .padding(.vertical, 8)
                         .padding(.horizontal, 16)
                         .background(swiftColor.opacity(0.1))
@@ -226,6 +229,7 @@ struct HomeScreen: View {
                 .fill(cardBackground)
                 .shadow(color: .black.opacity(0.2), radius: 15, y: 8)
         )
+        .colorScheme(.light) // Force light scheme for the card content
     }
 
     // MARK: - Helpers

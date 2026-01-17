@@ -14,10 +14,10 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                // 🔹 SECTION 1: Initial Splash (First 5s)
+                
                 if showSplashPhase {
                     ZStack {
-                        Color.black.ignoresSafeArea() // Ensure dark background
+                        Color.black.ignoresSafeArea() // Ensure dark 
                         
                         // New Spline Scene
                         SplashSplineView()
@@ -34,40 +34,37 @@ struct ContentView: View {
                     .transition(.opacity) // Fade out when switching
                 }
                 
-                // 🔹 SECTION 2: Main Onboarding (After 5s)
+           
                 else {
                     ZStack {
-                    
                         OnBoard3DView()
                             .ignoresSafeArea()
+                            .allowsHitTesting(false) // Fix: Prevent Spline from blocking button interactions
 
                         // Content Overlay
-                        ZStack {
-                            // No Logo on this page
-
-                            // Get Started Button
+                        VStack {
+                            Spacer()
+                            
                             if showButton {
-                                VStack {
-                                    Spacer()
-                                    
-                                    Button {
-                                        goToHome = true
-                                    } label: {
-                                        Text("Get Started")
-                                            .font(.headline.bold())
-                                            .foregroundColor(.white)
-                                            .frame(maxWidth: .infinity)
-                                            .padding()
-                                            .background(Color.black)
-                                            .cornerRadius(15)
-                                            .shadow(radius: 5)
-                                    }
-                                    .padding(.horizontal, 30)
-                                    .padding(.bottom, 40)
-                                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                                Button {
+                                    goToHome = true
+                                } label: {
+                                    Text("Get Started")
+                                        .font(.headline.bold())
+                                        .foregroundColor(.white)
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                        .background(Color.black)
+                                        .cornerRadius(15)
+                                        .shadow(radius: 5)
                                 }
+                                .padding(.horizontal, 30)
+                                .padding(.bottom, 40)
+                                .frame(maxWidth: 500) // Optimize for iPad width
+                                .transition(.move(edge: .bottom).combined(with: .opacity))
                             }
                         }
+                        .frame(maxWidth: .infinity) // Center the button container
                     }
                     .transition(.opacity) // Fade in
                 }
@@ -153,6 +150,14 @@ extension Color {
 
         self.init(red: r, green: g, blue: b)
     }
+
+    static let swiftColor = Color(hex: "FF684B")
+    static let secondaryColor = Color(hex: "E8A62A")
+    static let darkColor = Color(hex: "232223")
+    static let cardBackground = Color(hex: "2a2a2a")
+    static let backgroundColor = Color(red: 248/255, green: 249/255, blue: 253/255)
+    static let cardBackgroundLight = Color.white
+    static let secondaryBackground = Color(red: 240/255, green: 240/255, blue: 240/255)
 }
 
 //

@@ -1,5 +1,25 @@
 import Foundation
 
+struct DailyQuest: Codable, Identifiable {
+    let id: String
+    let title: String
+    let icon: String
+    let type: QuestType
+    let target: Int
+    var progress: Int
+    var isClaimed: Bool
+    
+    var isCompleted: Bool {
+        progress >= target
+    }
+}
+
+enum QuestType: String, Codable {
+    case lessons
+    case challenges
+    case liveGames
+}
+
 // MARK: - User Model
 struct User: Codable, Identifiable {
     let id: String
@@ -15,6 +35,12 @@ struct User: Codable, Identifiable {
     var correctAnswers: Int
     var liveGamesPlayed: Int
     var liveGamesWon: Int
+    var completedChallenges: [String] // Added to track practice challenges
+    
+    // Quest related
+    var dailyQuests: [DailyQuest]
+    var lastQuestRefreshDate: Date?
+    var hasClaimedDailyBonus: Bool
     
     init(
         id: String = UUID().uuidString,
@@ -29,7 +55,11 @@ struct User: Codable, Identifiable {
         totalQuestionsAnswered: Int = 0,
         correctAnswers: Int = 0,
         liveGamesPlayed: Int = 0,
-        liveGamesWon: Int = 0
+        liveGamesWon: Int = 0,
+        completedChallenges: [String] = [],
+        dailyQuests: [DailyQuest] = [],
+        lastQuestRefreshDate: Date? = nil,
+        hasClaimedDailyBonus: Bool = false
     ) {
         self.id = id
         self.name = name
@@ -44,6 +74,10 @@ struct User: Codable, Identifiable {
         self.correctAnswers = correctAnswers
         self.liveGamesPlayed = liveGamesPlayed
         self.liveGamesWon = liveGamesWon
+        self.completedChallenges = completedChallenges
+        self.dailyQuests = dailyQuests
+        self.lastQuestRefreshDate = lastQuestRefreshDate
+        self.hasClaimedDailyBonus = hasClaimedDailyBonus
     }
     
     var accuracy: Double {

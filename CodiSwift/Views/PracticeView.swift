@@ -5,8 +5,7 @@ struct PracticeView: View {
     @ObservedObject var userManager = UserManager.shared
     @State private var selectedCategory: ChallengeCategory? = nil
     
-    // Theme Colors
-    let swiftColor = Color(hex: "FF684B") // The main brand orange from HomeScreen
+    // Theme Colors (Now using global Color.swiftColor, .secondaryColor, etc.)
     let backgroundColor = Color(red: 248/255, green: 249/255, blue: 253/255)
     let cardBackgroundColor = Color.white
     
@@ -41,9 +40,25 @@ struct PracticeView: View {
                 id: "conditionals",
                 name: "Conditionals",
                 emoji: "🤔",
-                color: "E8A62A", // Yellow/Gold
+                color: "FF684B", // Updated to Orange
                 challengeCount: 5,
                 iconSystemName: "questionmark.circle.fill"
+            ),
+            ChallengeCategory(
+                id: "collections",
+                name: "Collections",
+                emoji: "📚",
+                color: "FF684B", // Updated to Orange
+                challengeCount: 5,
+                iconSystemName: "rectangle.stack.fill"
+            ),
+            ChallengeCategory(
+                id: "structs",
+                name: "Structs",
+                emoji: "🏗️",
+                color: "607D8B", // Blue Grey
+                challengeCount: 5,
+                iconSystemName: "building.2.fill"
             )
         ]
     }
@@ -60,7 +75,7 @@ struct PracticeView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Practice")
                             .font(.system(size: 40, weight: .bold))
-                            .foregroundColor(swiftColor) // Updated to Brand Orange
+                            .foregroundColor(Color.swiftColor) // Updated to Brand Orange
                         
                         Text("Master Swift through coding challenges")
                             .font(.system(size: 16, weight: .regular))
@@ -81,7 +96,7 @@ struct PracticeView: View {
                             .foregroundColor(.black)
                             .padding(.horizontal, 20)
                         
-                        LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: UIDevice.current.userInterfaceIdiom == .pad ? 200 : 160), spacing: 16)], spacing: 16) {
                             ForEach(categories) { category in
                                 CategoryCard(category: category) {
                                     selectedCategory = category
@@ -89,6 +104,7 @@ struct PracticeView: View {
                             }
                         }
                         .padding(.horizontal, 20)
+                        .frame(maxWidth: 1000) // Increased for iPad
                     }
                     
                     Spacer().frame(height: 120)
@@ -105,7 +121,7 @@ struct PracticeView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 8) {
                 Image(systemName: "trophy.fill")
-                    .foregroundColor(swiftColor) // Updated to Brand Orange
+                    .foregroundColor(Color.swiftColor) // Updated to Brand Orange
                 Text("Daily Practice")
                     .font(.headline)
                     .foregroundColor(.white)
@@ -128,7 +144,7 @@ struct PracticeView: View {
                     
                     Circle()
                         .trim(from: 0, to: 1/3)
-                        .stroke(swiftColor, style: StrokeStyle(lineWidth: 4, lineCap: .round)) // Updated to Brand Orange
+                        .stroke(Color.swiftColor, style: StrokeStyle(lineWidth: 4, lineCap: .round)) // Updated to Brand Orange
                         .frame(width: 36, height: 36)
                         .rotationEffect(.degrees(-90))
                 }
@@ -144,7 +160,7 @@ struct PracticeView: View {
         .background(
             ZStack {
                 Color(hex: "222322").opacity(0.8)
-                try? SplineView(sceneFileURL: URL(string: "https://build.spline.design/7EKuO-pVexGZEPme4WHy/scene.splineswift")!)
+                SplineView(sceneFileURL: URL(string: "https://build.spline.design/7EKuO-pVexGZEPme4WHy/scene.splineswift")!)
             }
         )
         .cornerRadius(24)
@@ -203,6 +219,7 @@ struct ChallengeCategory: Identifiable {
 struct ChallengeListView: View {
     let category: ChallengeCategory
     @Environment(\.dismiss) private var dismiss
+    @ObservedObject var userManager = UserManager.shared
     @State private var selectedChallenge: Challenge? = nil
     
     var challenges: [Challenge] {
@@ -262,14 +279,19 @@ struct ChallengeListView: View {
                         }
                         .padding(.vertical, 20)
                         
-                        // Lis
-                        ForEach(challenges) { challenge in
-                            ChallengeRow(challenge: challenge) {
-                                selectedChallenge = challenge
+                        // List
+                        VStack(spacing: 12) {
+                            ForEach(challenges) { challenge in
+                                ChallengeRow(challenge: challenge, isCompleted: userManager.currentUser.completedChallenges.contains(challenge.id)) {
+                                    selectedChallenge = challenge
+                                }
                             }
                         }
+                        .padding(.horizontal, 20)
+                        .frame(maxWidth: 900)
                     }
-                    .padding(50)
+                    .padding(.vertical, 30)
+                    .frame(maxWidth: .infinity)
                 }
             }
         }
@@ -282,6 +304,7 @@ struct ChallengeListView: View {
 // MARK: - Challenge Row
 struct ChallengeRow: View {
     let challenge: Challenge
+    var isCompleted: Bool
     let action: () -> Void
     
     var body: some View {
@@ -316,15 +339,21 @@ struct ChallengeRow: View {
                 
                 Spacer()
                 
-                Image(systemName: "play.circle.fill")
-                    .font(.title2)
-                    .foregroundColor(Color(hex: "FF684B")) // Play button also brand orange
+                if isCompleted {
+                    Image(systemName: "checkmark.seal.fill")
+                        .font(.title2)
+                        .foregroundColor(.green)
+                } else {
+                    Image(systemName: "play.circle.fill")
+                        .font(.title2)
+                        .foregroundColor(Color(hex: "FF684B")) // Play button also brand orange
+                }
             }
             .padding(16)
             .background(
-                RoundedRectangle(cornerRadius: 16)
+                RoundedRectangle(cornerRadius: 14)
                     .fill(Color.white)
-                    .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
+                    .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
             )
         }
     }
@@ -598,6 +627,122 @@ struct Challenge: Identifiable {
                     points: 150
                 )
             ]
+        case "collections":
+            return [
+                Challenge(
+                    id: "coll1",
+                    title: "String Array",
+                    description: "Create an array called colors with 'Red' and 'Blue'",
+                    difficulty: .easy,
+                    category: "collections",
+                    starterCode: "",
+                    solution: "var colors = [\"Red\", \"Blue\"]",
+                    testCases: [],
+                    points: 50
+                ),
+                Challenge(
+                    id: "coll2",
+                    title: "Append Item",
+                    description: "Add 'Green' to the colors array",
+                    difficulty: .easy,
+                    category: "collections",
+                    starterCode: "var colors = [\"Red\"]\n",
+                    solution: "colors.append(\"Green\")",
+                    testCases: [],
+                    points: 50
+                ),
+                Challenge(
+                    id: "coll3",
+                    title: "Dictionary basics",
+                    description: "Create a [String: Int] dictionary called scores",
+                    difficulty: .medium,
+                    category: "collections",
+                    starterCode: "",
+                    solution: "var scores: [String: Int] = [:]",
+                    testCases: [],
+                    points: 100
+                ),
+                Challenge(
+                    id: "coll4",
+                    title: "Access Array",
+                    description: "Retrieve the first item from colors",
+                    difficulty: .easy,
+                    category: "collections",
+                    starterCode: "let colors = [\"Red\"]\n",
+                    solution: "let first = colors[0]",
+                    testCases: [],
+                    points: 50
+                ),
+                Challenge(
+                    id: "coll5",
+                    title: "Count items",
+                    description: "Find how many items are in the array",
+                    difficulty: .medium,
+                    category: "collections",
+                    starterCode: "let items = [1, 2, 3]\n",
+                    solution: "let count = items.count",
+                    testCases: [],
+                    points: 100
+                )
+            ]
+        case "structs":
+            return [
+                Challenge(
+                    id: "struct1",
+                    title: "Define Struct",
+                    description: "Create a struct Person with name: String",
+                    difficulty: .easy,
+                    category: "structs",
+                    starterCode: "",
+                    solution: "struct Person { var name: String }",
+                    testCases: [],
+                    points: 50
+                ),
+                Challenge(
+                    id: "struct2",
+                    title: "Init Instance",
+                    description: "Create an instance of Person named 'john'",
+                    difficulty: .easy,
+                    category: "structs",
+                    starterCode: "struct Person { var name: String }\n",
+                    solution: "let john = Person(name: \"John\")",
+                    testCases: [],
+                    points: 50
+                ),
+                Challenge(
+                    id: "struct3",
+                    title: "Methods",
+                    description: "Add a greet() method to struct Person",
+                    difficulty: .medium,
+                    category: "structs",
+                    starterCode: "struct Person {\n  var name: String\n",
+                    solution: "  func greet() { print(\"Hi\") }\n}",
+                    testCases: [],
+                    points: 100
+                ),
+                Challenge(
+                    id: "struct4",
+                    title: "Struct State",
+                    description: "Add a points property with default value 0",
+                    difficulty: .easy,
+                    category: "structs",
+                    starterCode: "struct User {\n",
+                    solution: "  var points: Int = 0\n}",
+                    testCases: [],
+                    points: 50
+                ),
+                Challenge(
+                    id: "struct5",
+                    title: "Computed Prop",
+                    description: "Add a isAdult computed property (age >= 18)",
+                    difficulty: .hard,
+                    category: "structs",
+                    starterCode: "struct Person {\n  var age: Int\n",
+                    solution: "  var isAdult: Bool { age >= 18 }\n}",
+                    testCases: [],
+                    points: 150
+                )
+            ]
         default:
             return []
         }
@@ -621,16 +766,20 @@ struct CodeEditorView: View {
                 .cornerRadius(12)
             
             // Syntax Highlighting Overlay
-            Text(applyHighlighting(to: code))
+            // Note: We use a small offset and specific padding to match TextEditor's internal insets
+            Text(applyHighlighting(to: code + " ")) // Add a space to prevent flickering at line ends
                 .font(.system(.body, design: .monospaced))
-                .padding(12)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 12)
                 .foregroundColor(.white)
-                .opacity(1)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .background(Color.clear)
             
             // Transparent TextEditor for user input
             TextEditor(text: $code)
                 .font(.system(.body, design: .monospaced))
-                .padding(12)
+                .padding(.horizontal, 4) // TextEditor has its own internal 4pt horizontal padding
+                .padding(.vertical, 4)   // And small vertical padding
                 .scrollContentBackground(.hidden)
                 .foregroundColor(.clear)
                 .accentColor(.blue)
@@ -781,7 +930,7 @@ struct ChallengeDetailView: View {
                         Spacer()
                         
                         if isSuccess && !showingConfetti {
-                            Button("Submit & Earn \(challenge.points) pts") {
+                            Button(userManager.currentUser.completedChallenges.contains(challenge.id) ? "Submit (0 pts)" : "Submit & Earn \(challenge.points) pts") {
                                 submitChallenge()
                             }
                             .font(.headline)
@@ -843,7 +992,7 @@ struct ChallengeDetailView: View {
                     .font(.title.bold())
                     .foregroundColor(.black)
                 
-                Text("You've earned \(challenge.points) points!")
+                Text(userManager.currentUser.completedChallenges.contains(challenge.id) ? "You've done this before!" : "You've earned \(challenge.points) points!")
                     .font(.headline)
                     .foregroundColor(.gray)
                 
@@ -861,24 +1010,44 @@ struct ChallengeDetailView: View {
     }
     
     private func runCode() {
-        // Normalize both strings to handle smart quotes, spaces, and case
+        let userCode = code.trimmingCharacters(in: .whitespacesAndNewlines)
         let normalizedUserCode = code.normalizedForComparison()
         let normalizedSolution = challenge.solution.normalizedForComparison()
         
-        // Only accept if the user code contains the full normalized solution
-        // and is not just a substring of the solution (which caused early false positives)
+        // Specific checks for common mistakes
+        if challenge.id == "var1" {
+            // Hello World challenge specific robust check
+            let hasQuotes = userCode.contains("\"") || userCode.contains("'") || userCode.contains("“")
+            let hasHelloWorld = userCode.lowercased().contains("hello world")
+            
+            if !hasQuotes && hasHelloWorld {
+                isSuccess = false
+                executionResult = "Almost! Don't forget to wrap 'Hello World' in quotes."
+                hasValidated = true
+                return
+            }
+        }
+        
+        // General substring check
         if !normalizedSolution.isEmpty && normalizedUserCode.contains(normalizedSolution) {
             isSuccess = true
             executionResult = "Great job! Your code works perfectly."
         } else {
             isSuccess = false
-            executionResult = "Not quite right yet. Keep coding!"
+            // Provide a generic hint if it doesn't match
+            if challenge.solution.contains("\"") && !userCode.contains("\"") {
+                executionResult = "Hint: Did you forget the quotes for your string?"
+            } else if challenge.solution.contains("var") && !userCode.contains("var") {
+                executionResult = "Hint: You should use the 'var' keyword here."
+            } else {
+                executionResult = "Not quite right yet. Double check the instruction!"
+            }
         }
         hasValidated = true
     }
     
     private func submitChallenge() {
-        userManager.addPoints(challenge.points)
+        _ = userManager.completeChallenge(challenge.id, points: challenge.points)
         withAnimation {
             showingConfetti = true
         }

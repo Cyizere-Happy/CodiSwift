@@ -3,41 +3,28 @@ import SplineRuntime
 
 struct LiveView: View {
     @ObservedObject var userManager = UserManager.shared
-    @State private var gameMode: GameMode = .menu
-    @State private var gameCode = ""
-    @State private var pointsBet = 100
+    @StateObject private var gameVM = LiveGameViewModel()
     
-    let swiftColor = Color(hex: "FF684B")
-    let darkColor = Color(hex: "232223")
-    let cardBackground = Color(hex: "2a2a2a")
     
-    enum GameMode {
-        case menu
-        case host
-        case join
-        case lobby
-        case playing
-        case results
-    }
     
     var body: some View {
         ZStack {
             // Background
-            if gameMode == .menu {
+            if gameVM.currentMode == .menu { // Changed gameMode to gameVM.currentMode
                 // Spline Scene for Menu
                 SplineView(sceneFileURL: URL(string: "https://build.spline.design/07MOBgjTDL2KtTI0v2uF/scene.splineswift")!)
                     .ignoresSafeArea()
             } else {
                 // Gradient for other modes
                 LinearGradient(
-                    colors: [Color(hex: "1a1a1a"), Color(hex: "2a1a3a")],
+                    colors: [Color.black, Color.darkColor],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
                 .ignoresSafeArea()
             }
             
-            switch gameMode {
+            switch gameVM.isGameOver ? LiveGameViewModel.ViewMode.results : gameVM.currentMode {
             case .menu:
                 menuView
             case .host:
@@ -66,7 +53,7 @@ struct LiveView: View {
             // Buttons
             VStack(spacing: 16) {
                 Button {
-                    gameMode = .host
+                    gameVM.currentMode = .host
                 } label: {
                     HStack(spacing: 12) {
                         Image(systemName: "person.3.fill")
@@ -79,13 +66,13 @@ struct LiveView: View {
                     .padding(.vertical, 18)
                     .background(
                         RoundedRectangle(cornerRadius: 14)
-                            .fill(swiftColor)
-                            .shadow(color: swiftColor.opacity(0.4), radius: 8, y: 4)
+                            .fill(Color.swiftColor)
+                            .shadow(color: Color.swiftColor.opacity(0.4), radius: 8, y: 4)
                     )
                 }
                 
                 Button {
-                    gameMode = .join
+                    gameVM.currentMode = .join
                 } label: {
                     HStack(spacing: 12) {
                         Image(systemName: "arrow.right.circle.fill")
@@ -98,11 +85,12 @@ struct LiveView: View {
                     .padding(.vertical, 18)
                     .background(
                         RoundedRectangle(cornerRadius: 14)
-                            .fill(Color.purple)
-                            .shadow(color: Color.purple.opacity(0.4), radius: 8, y: 4)
+                            .fill(Color.darkColor)
+                            .shadow(color: Color.black.opacity(0.4), radius: 8, y: 4)
                     )
                 }
             }
+            .frame(maxWidth: 400) // Center and limit width
             .padding(.horizontal, 32)
             
             Spacer().frame(height: 100)
@@ -116,7 +104,7 @@ struct LiveView: View {
                 // Back button
                 HStack {
                     Button {
-                        gameMode = .menu
+                        gameVM.currentMode = .menu
                     } label: {
                         HStack(spacing: 6) {
                             Image(systemName: "chevron.left")
@@ -150,16 +138,16 @@ struct LiveView: View {
                         HStack(spacing: 16) {
                             ForEach([50, 100, 200, 500], id: \.self) { amount in
                                 Button {
-                                    pointsBet = amount
+                                    gameVM.pointsBet = amount
                                 } label: {
                                     Text("\(amount)")
                                         .font(.system(size: 16, weight: .bold))
-                                        .foregroundColor(pointsBet == amount ? .white : .white.opacity(0.6))
+                                        .foregroundColor(gameVM.pointsBet == amount ? .white : .white.opacity(0.6))
                                         .frame(maxWidth: .infinity)
                                         .padding(.vertical, 12)
                                         .background(
                                             RoundedRectangle(cornerRadius: 10)
-                                                .fill(pointsBet == amount ? swiftColor : cardBackground)
+                                                .fill(gameVM.pointsBet == amount ? Color.swiftColor : Color.cardBackground)
                                         )
                                 }
                             }
@@ -168,7 +156,7 @@ struct LiveView: View {
                     .padding(20)
                     .background(
                         RoundedRectangle(cornerRadius: 16)
-                            .fill(cardBackground)
+                            .fill(Color.cardBackground)
                     )
                     
                     // Your Points
@@ -178,20 +166,22 @@ struct LiveView: View {
                         Spacer()
                         Text("\(userManager.currentUser.points)")
                             .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(swiftColor)
+                            .foregroundColor(Color.swiftColor)
                     }
                     .padding(16)
                     .background(
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(cardBackground)
+                            .fill(Color.cardBackground)
                     )
                 }
                 .padding(.horizontal, 20)
                 
                 // Create Game Button
                 Button {
-                    gameMode = .lobby
-                    gameCode = generateGameCode()
+                    // Deduct points when hosting
+                    _ = userManager.updatePoints(-gameVM.pointsBet)
+                    gameVM.currentMode = .lobby
+                    gameVM.gameCode = generateGameCode()
                 } label: {
                     Text("Create Game")
                         .font(.system(size: 18, weight: .bold))
@@ -200,13 +190,13 @@ struct LiveView: View {
                         .padding(.vertical, 16)
                         .background(
                             RoundedRectangle(cornerRadius: 14)
-                                .fill(swiftColor)
-                                .shadow(color: swiftColor.opacity(0.4), radius: 8, y: 4)
+                                .fill(Color.swiftColor)
+                                .shadow(color: Color.swiftColor.opacity(0.4), radius: 8, y: 4)
                         )
                 }
                 .padding(.horizontal, 20)
-                .disabled(userManager.currentUser.points < pointsBet)
-                .opacity(userManager.currentUser.points < pointsBet ? 0.5 : 1)
+                .disabled(userManager.currentUser.points < gameVM.pointsBet)
+                .opacity(userManager.currentUser.points < gameVM.pointsBet ? 0.5 : 1)
                 
                 Spacer().frame(height: 100)
             }
@@ -219,7 +209,7 @@ struct LiveView: View {
             // Back button
             HStack {
                 Button {
-                    gameMode = .menu
+                    gameVM.currentMode = .menu
                 } label: {
                     HStack(spacing: 6) {
                         Image(systemName: "chevron.left")
@@ -246,20 +236,21 @@ struct LiveView: View {
                     .foregroundColor(.white.opacity(0.7))
                 
                 // Code Input
-                TextField("", text: $gameCode)
+                TextField("", text: $gameVM.gameCode)
                     .font(.system(size: 32, weight: .bold, design: .monospaced))
                     .foregroundColor(.white)
                     .multilineTextAlignment(.center)
                     .padding(.vertical, 20)
                     .background(
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(cardBackground)
+                            .fill(Color.cardBackground)
                     )
                     .padding(.horizontal, 40)
                 
                 Button {
-                    // Simulate joining
-                    gameMode = .lobby
+                    // Deduct points when joining
+                    _ = userManager.updatePoints(-gameVM.pointsBet)
+                    gameVM.currentMode = .lobby
                 } label: {
                     Text("Join Game")
                         .font(.system(size: 18, weight: .bold))
@@ -268,13 +259,13 @@ struct LiveView: View {
                         .padding(.vertical, 16)
                         .background(
                             RoundedRectangle(cornerRadius: 14)
-                                .fill(Color.purple)
-                                .shadow(color: Color.purple.opacity(0.4), radius: 8, y: 4)
+                                .fill(Color.swiftColor)
+                                .shadow(color: Color.swiftColor.opacity(0.4), radius: 8, y: 4)
                         )
                 }
                 .padding(.horizontal, 40)
-                .disabled(gameCode.isEmpty)
-                .opacity(gameCode.isEmpty ? 0.5 : 1)
+                .disabled(gameVM.gameCode.count < 6)
+                .opacity(gameVM.gameCode.count < 6 ? 0.5 : 1)
             }
             
             Spacer()
@@ -291,14 +282,14 @@ struct LiveView: View {
                     .font(.system(size: 16, weight: .medium))
                     .foregroundColor(.white.opacity(0.7))
                 
-                Text(gameCode)
+                Text(gameVM.gameCode)
                     .font(.system(size: 48, weight: .bold, design: .monospaced))
-                    .foregroundColor(swiftColor)
+                    .foregroundColor(Color.swiftColor)
                     .padding(.horizontal, 32)
                     .padding(.vertical, 16)
                     .background(
                         RoundedRectangle(cornerRadius: 16)
-                            .fill(cardBackground)
+                            .fill(Color.cardBackground)
                     )
             }
             .padding(.top, 40)
@@ -320,7 +311,8 @@ struct LiveView: View {
             
             // Start Button
             Button {
-                gameMode = .playing
+                gameVM.startTimer()
+                gameVM.currentMode = .playing
             } label: {
                 Text("Start Game")
                     .font(.system(size: 18, weight: .bold))
@@ -329,8 +321,8 @@ struct LiveView: View {
                     .padding(.vertical, 16)
                     .background(
                         RoundedRectangle(cornerRadius: 14)
-                            .fill(swiftColor)
-                            .shadow(color: swiftColor.opacity(0.4), radius: 8, y: 4)
+                            .fill(Color.swiftColor)
+                            .shadow(color: Color.swiftColor.opacity(0.4), radius: 8, y: 4)
                     )
             }
             .padding(.horizontal, 20)
@@ -338,11 +330,9 @@ struct LiveView: View {
         }
     }
     
-    // MARK: - Playing View (Simplified)
+    // MARK: - Playing View
     private var playingView: some View {
-        LiveGameView(onComplete: {
-            gameMode = .results
-        })
+        LiveGameView(gameVM: gameVM)
     }
     
     // MARK: - Results View
@@ -350,21 +340,59 @@ struct LiveView: View {
         VStack(spacing: 32) {
             Spacer()
             
-            Text("🏆")
-                .font(.system(size: 80))
-            
-            Text("You Won!")
+            Text(gameVM.userWon ? "You Won!" : "You Lost!")
                 .font(.system(size: 36, weight: .bold))
                 .foregroundColor(.white)
             
-            Text("+\(pointsBet * 2) points")
-                .font(.system(size: 24, weight: .bold))
-                .foregroundColor(swiftColor)
+            VStack(spacing: 8) {
+                Text(gameVM.userWon ? "+\(gameVM.pointsBet) points" : "-\(gameVM.pointsBet) points")
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundColor(gameVM.userWon ? .green : .red)
+                
+                Text(gameVM.userWon ? "You took them from \(gameVM.opponentName)" : "\(gameVM.opponentName) took your points")
+                    .font(.system(size: 16))
+                    .foregroundColor(.white.opacity(0.8))
+            }
+            
+            HStack(spacing: 40) {
+                VStack {
+                    Text(userManager.currentUser.emoji)
+                        .font(.system(size: 40))
+                    Text("You")
+                        .font(.caption)
+                    Text("\(gameVM.score)")
+                        .font(.headline)
+                }
+                
+                Text("VS")
+                    .font(.title2.bold())
+                    .foregroundColor(Color.swiftColor)
+                
+                VStack {
+                    Text(gameVM.opponentEmoji)
+                        .font(.system(size: 40))
+                    Text(gameVM.opponentName)
+                        .font(.caption)
+                    Text("\(gameVM.opponentScore)")
+                        .font(.headline)
+                }
+            }
+            .foregroundColor(.white)
+            .padding(24)
+            .background(RoundedRectangle(cornerRadius: 20).fill(Color.cardBackground))
             
             Spacer()
             
             Button {
-                gameMode = .menu
+                if gameVM.isGameOver {
+                    if gameVM.userWon {
+                        _ = userManager.updatePoints(gameVM.pointsBet * 2)
+                        userManager.updateQuestProgress(action: .liveGames, amount: 1)
+                    }
+                    // Points were already deducted upon entering gameVM.host or gameVM.join views
+                }
+                gameVM.reset()
+                gameVM.currentMode = .menu
             } label: {
                 Text("Back to Menu")
                     .font(.system(size: 18, weight: .bold))
@@ -373,7 +401,7 @@ struct LiveView: View {
                     .padding(.vertical, 16)
                     .background(
                         RoundedRectangle(cornerRadius: 14)
-                            .fill(swiftColor)
+                            .fill(Color.swiftColor)
                     )
             }
             .padding(.horizontal, 32)
@@ -415,128 +443,102 @@ struct PlayerCard: View {
                 }
             }
         }
-        .padding(16)
         .background(
             RoundedRectangle(cornerRadius: 12)
-                .fill(Color(hex: "2a2a2a"))
+                .fill(Color.cardBackground)
         )
     }
 }
 
 // MARK: - Live Game View (Simplified Kahoot-style)
 struct LiveGameView: View {
-    let onComplete: () -> Void
-    @State private var currentQuestion = 0
-    @State private var timeRemaining = 10
-    @State private var selectedAnswer: String? = nil
-    @State private var timer: Timer? = nil
+    @ObservedObject var gameVM: LiveGameViewModel
+    @Environment(\.horizontalSizeClass) var sizeClass
     
-    let swiftColor = Color(hex: "FF684B")
-    let questions = [
-        ("What keyword creates a variable?", ["var", "let", "const", "int"], "var"),
-        ("What keyword creates a constant?", ["var", "let", "const", "final"], "let")
-    ]
+    
     
     var body: some View {
         VStack(spacing: 0) {
-            // Timer
+            // Timer & Score
             HStack {
+                Text("Score: \(gameVM.score)")
+                    .font(.system(size: 20, weight: .bold))
+                    .foregroundColor(.white)
+                
                 Spacer()
-                Text("\(timeRemaining)s")
+                
+                Text("\(gameVM.timeRemaining)s")
                     .font(.system(size: 24, weight: .bold))
                     .foregroundColor(.white)
                     .padding(.horizontal, 20)
                     .padding(.vertical, 10)
-                    .background(Capsule().fill(swiftColor))
+                    .background(Capsule().fill(Color.swiftColor))
             }
             .padding(20)
             
             Spacer()
             
             // Question
-            Text(questions[currentQuestion].0)
-                .font(.system(size: 28, weight: .bold))
-                .foregroundColor(.white)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 20)
+            if let question = gameVM.currentQuestion {
+                Text(question.question)
+                    .font(.system(size: sizeClass == .regular ? 40 : 28, weight: .bold))
+                    .foregroundColor(.white)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 40)
+                    .id(gameVM.currentQuestionIndex) // Force refresh for animation
+                    .transition(.asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity), removal: .move(edge: .leading).combined(with: .opacity)))
+            }
             
             Spacer()
             
             // Answers
-            VStack(spacing: 16) {
-                ForEach(Array(questions[currentQuestion].1.enumerated()), id: \.offset) { index, answer in
-                    Button {
-                        selectedAnswer = answer
-                        timer?.invalidate()
-                        
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                            if currentQuestion < questions.count - 1 {
-                                currentQuestion += 1
-                                selectedAnswer = nil
-                                timeRemaining = 10
-                                startTimer()
-                            } else {
-                                onComplete()
-                            }
+            if let question = gameVM.currentQuestion {
+                let columns = [
+                    GridItem(.flexible(), spacing: 16),
+                    GridItem(.flexible(), spacing: 16)
+                ]
+                
+                LazyVGrid(columns: sizeClass == .regular ? columns : [GridItem(.flexible())], spacing: 16) {
+                    ForEach(question.options, id: \.self) { answer in
+                        Button {
+                            gameVM.handleAnswer(answer)
+                        } label: {
+                            Text(answer)
+                                .font(.system(size: 20, weight: .bold))
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: sizeClass == .regular ? 100 : 64)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .fill(answerColor(answer, question: question))
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .stroke(Color.white.opacity(0.1), lineWidth: 1)
+                                )
                         }
-                    } label: {
-                        Text(answer)
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 16)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(answerColor(answer))
-                            )
+                        .disabled(gameVM.selectedAnswer != nil)
                     }
-                    .disabled(selectedAnswer != nil)
                 }
+                .padding(.horizontal, sizeClass == .regular ? 60 : 20)
+                .padding(.bottom, sizeClass == .regular ? 60 : 40)
             }
-            .padding(.horizontal, 20)
-            
-            Spacer().frame(height: 120)
         }
         .background(Color(hex: "1a1a1a"))
-        .onAppear {
-            startTimer()
-        }
     }
     
-    private func startTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-            if timeRemaining > 0 {
-                timeRemaining -= 1
-            } else {
-                timer?.invalidate()
-                selectedAnswer = ""
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                    if currentQuestion < questions.count - 1 {
-                        currentQuestion += 1
-                        selectedAnswer = nil
-                        timeRemaining = 10
-                        startTimer()
-                    } else {
-                        onComplete()
-                    }
-                }
-            }
-        }
-    }
-    
-    private func answerColor(_ answer: String) -> Color {
-        if selectedAnswer == nil {
-            return Color(hex: "2a2a2a")
+    private func answerColor(_ answer: String, question: LiveQuestion) -> Color {
+        if gameVM.selectedAnswer == nil {
+            return Color.cardBackground
         }
         
-        if answer == questions[currentQuestion].2 {
-            return .green.opacity(0.3)
-        } else if answer == selectedAnswer {
-            return .red.opacity(0.3)
+        if answer == question.correctAnswer {
+            return .green.opacity(0.6)
+        } else if answer == gameVM.selectedAnswer {
+            return .red.opacity(0.6)
         }
         
-        return Color(hex: "2a2a2a")
+        return Color.cardBackground
     }
 }
 

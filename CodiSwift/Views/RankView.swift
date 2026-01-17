@@ -133,25 +133,31 @@ struct RankView: View {
     // MARK: - Podium View
     private var podiumView: some View {
         let players = currentRankedPlayers
-        return HStack(alignment: .bottom, spacing: 12) {
+        let isIPad = UIDevice.current.userInterfaceIdiom == .pad
+        
+        return HStack(alignment: .bottom, spacing: isIPad ? 24 : 12) {
             if players.count > 1 {
-                PodiumCard(player: players[1], height: 100, color: Color(hex: "C0C0C0"))
+                PodiumCard(player: players[1], height: isIPad ? 140 : 100, color: Color(hex: "C0C0C0"))
             }
             if players.count > 0 {
-                PodiumCard(player: players[0], height: 130, color: Color(hex: "FFD700"))
+                PodiumCard(player: players[0], height: isIPad ? 180 : 130, color: Color(hex: "FFD700"))
             }
             if players.count > 2 {
-                PodiumCard(player: players[2], height: 80, color: Color(hex: "CD7F32"))
+                PodiumCard(player: players[2], height: isIPad ? 110 : 80, color: Color(hex: "CD7F32"))
             }
         }
+        .frame(maxWidth: isIPad ? 800 : 500) // Increased for portrait iPad
         .padding(.horizontal, 20)
         .padding(.bottom, 24)
+        .frame(maxWidth: .infinity) // Center in parent
         .animation(.spring(), value: selectedTab)
     }
     
     // MARK: - Leaderboard List
     private var leaderboardList: some View {
         let players = currentRankedPlayers
+        let isIPad = UIDevice.current.userInterfaceIdiom == .pad
+        
         return ScrollView {
             VStack(spacing: 12) {
                 if players.count > 3 {
@@ -162,7 +168,9 @@ struct RankView: View {
                 
                 Spacer().frame(height: 100)
             }
-            .padding(.horizontal, 20)
+            .padding(.horizontal, isIPad ? 40 : 20)
+            .frame(maxWidth: 900) // Increased for iPad
+            .frame(maxWidth: .infinity)
         }
     }
 }
@@ -176,33 +184,38 @@ struct PodiumCard: View {
     let darkColor = Color(hex: "232223")
     let lightOrange = Color(hex: "FFB88D") // lighter orange for emoji circle
     
+    var isIPad: Bool { UIDevice.current.userInterfaceIdiom == .pad }
+    
     var body: some View {
-        VStack(spacing: 8) {
-            if player.rank == 1 { Text("👑").font(.system(size: 32)) }
+        VStack(spacing: isIPad ? 12 : 8) {
+            if player.rank == 1 { 
+                Text("👑")
+                    .font(.system(size: isIPad ? 44 : 32)) 
+            }
             
             // Emoji with light orange circle
             Text(player.emoji)
-                .font(.system(size: 40))
-                .padding(16)
+                .font(.system(size: isIPad ? 56 : 40))
+                .padding(isIPad ? 20 : 16)
                 .background(
                     Circle()
                         .fill(lightOrange)
-                        .frame(width: 72, height: 72)
+                        .frame(width: isIPad ? 100 : 72, height: isIPad ? 100 : 72)
                 )
             
             Text("#\(player.rank)")
-                .font(.system(size: 16, weight: .bold))
+                .font(.system(size: isIPad ? 22 : 16, weight: .bold))
                 .foregroundColor(.white)
-                .padding(.horizontal, 12)
+                .padding(.horizontal, isIPad ? 16 : 12)
                 .padding(.vertical, 4)
                 .background(Capsule().fill(color))
             
             Text(player.name)
-                .font(.system(size: 14, weight: .semibold))
+                .font(.system(size: isIPad ? 18 : 14, weight: .semibold))
                 .foregroundColor(darkColor)
             
             Text("\(player.points)")
-                .font(.system(size: 12, weight: .medium))
+                .font(.system(size: isIPad ? 16 : 12, weight: .medium))
                 .foregroundColor(Color(hex: "FF684B"))
             
             Rectangle()
