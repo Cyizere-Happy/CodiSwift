@@ -21,6 +21,8 @@ class UserManager: ObservableObject {
         } else {
             // Create new user
             self.currentUser = User()
+            // Ensure quests are refreshed for new user immediately
+            self.refreshQuestsIfNeeded()
             self.saveUser()
         }
     }
@@ -115,7 +117,9 @@ class UserManager: ObservableObject {
     }
     
     func claimDailyBonus() -> Bool {
-        let allDone = currentUser.dailyQuests.allSatisfy { $0.isCompleted }
+        let hasQuests = !currentUser.dailyQuests.isEmpty
+        let allDone = hasQuests && currentUser.dailyQuests.allSatisfy { $0.isCompleted }
+        
         if allDone && !currentUser.hasClaimedDailyBonus {
             currentUser.points += 45
             currentUser.hasClaimedDailyBonus = true
